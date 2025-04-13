@@ -10,7 +10,7 @@ const Header = () => {
         <div className="flex justify-center mb-6">
           <div className="relative w-24 h-24 rounded-full overflow-hidden glass-panel p-1">
             <img 
-              src="https://images.unsplash.com/photo-1494252713559-f26b4bf0b174?q=80&w=150&h=150&auto=format&fit=crop"
+              src="/lovable-uploads/495eb352-ec66-420f-ad30-2b9f51c77218.png"
               alt="Logo"
               className="w-full h-full object-cover rounded-full"
             />
