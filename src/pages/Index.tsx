@@ -1,12 +1,44 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import React, { useState } from 'react';
+import Header from '@/components/Header';
+import TabNavigation from '@/components/TabNavigation';
+import PhotoGallery from '@/components/PhotoGallery';
+import VideoGallery from '@/components/VideoGallery';
+import CinematographyTab from '@/components/CinematographyTab';
+import GraphicDesignTab from '@/components/GraphicDesignTab';
+import Footer from '@/components/Footer';
 
 const Index = () => {
+  const [activeTab, setActiveTab] = useState('photos');
+
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'photos':
+        return <PhotoGallery />;
+      case 'videography':
+        return <VideoGallery />;
+      case 'cinematography':
+        return <CinematographyTab />;
+      case 'graphic-design':
+        return <GraphicDesignTab />;
+      default:
+        return <PhotoGallery />;
+    }
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen flex flex-col bg-cosmic-gradient">
+      <Header />
+      
+      <main className="flex-grow max-w-6xl w-full mx-auto px-4 py-8">
+        <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
+        
+        <div className="mb-8">
+          {renderTabContent()}
+        </div>
+      </main>
+      
+      <Footer />
     </div>
   );
 };

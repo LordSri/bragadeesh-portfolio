@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -52,15 +53,15 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
-				sidebar: {
-					DEFAULT: 'hsl(var(--sidebar-background))',
-					foreground: 'hsl(var(--sidebar-foreground))',
-					primary: 'hsl(var(--sidebar-primary))',
-					'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-					accent: 'hsl(var(--sidebar-accent))',
-					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-					border: 'hsl(var(--sidebar-border))',
-					ring: 'hsl(var(--sidebar-ring))'
+				cosmic: {
+					DEFAULT: '#0a0a12',
+					dark: '#050508',
+					light: '#1a1a2e'
+				},
+				aurora: {
+					red: '#fc3a57',
+					purple: '#a13aa6',
+					blue: '#3a57fc'
 				}
 			},
 			borderRadius: {
@@ -70,25 +71,43 @@ export default {
 			},
 			keyframes: {
 				'accordion-down': {
-					from: {
-						height: '0'
-					},
-					to: {
-						height: 'var(--radix-accordion-content-height)'
-					}
+					from: { height: '0' },
+					to: { height: 'var(--radix-accordion-content-height)' }
 				},
 				'accordion-up': {
-					from: {
-						height: 'var(--radix-accordion-content-height)'
-					},
-					to: {
-						height: '0'
-					}
+					from: { height: 'var(--radix-accordion-content-height)' },
+					to: { height: '0' }
+				},
+				'fade-in': {
+					'0%': { opacity: '0', transform: 'translateY(10px)' },
+					'100%': { opacity: '1', transform: 'translateY(0)' }
+				},
+				'fade-out': {
+					'0%': { opacity: '1', transform: 'translateY(0)' },
+					'100%': { opacity: '0', transform: 'translateY(10px)' }
+				},
+				'pulse-slow': {
+					'0%, 100%': { opacity: '1' },
+					'50%': { opacity: '0.7' }
+				},
+				'aurora-glow': {
+					'0%': { 'box-shadow': '0 0 10px rgba(252, 58, 87, 0.4)' },
+					'33%': { 'box-shadow': '0 0 15px rgba(161, 58, 166, 0.4)' },
+					'66%': { 'box-shadow': '0 0 10px rgba(58, 87, 252, 0.4)' },
+					'100%': { 'box-shadow': '0 0 10px rgba(252, 58, 87, 0.4)' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'fade-in': 'fade-in 0.5s ease-out',
+				'fade-out': 'fade-out 0.5s ease-out',
+				'pulse-slow': 'pulse-slow 4s infinite ease-in-out',
+				'aurora-glow': 'aurora-glow 6s infinite ease-in-out'
+			},
+			backgroundImage: {
+				'cosmic-gradient': 'radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0a0a12 100%)',
+				'aurora-gradient': 'linear-gradient(135deg, rgba(58, 87, 252, 0.15) 0%, rgba(161, 58, 166, 0.15) 50%, rgba(252, 58, 87, 0.15) 100%)'
 			}
 		}
 	},
