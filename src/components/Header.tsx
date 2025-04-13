@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Mail, Phone, Linkedin, Instagram, Twitter } from 'lucide-react';
 
@@ -8,13 +7,12 @@ const Header = () => {
       <div className="max-w-7xl mx-auto pt-8">
         {/* Watermark logo */}
         <div className="flex justify-center mb-6">
-          <div className="relative w-24 h-24 rounded-full overflow-hidden glass-panel p-1">
+          <div className="relative w-48 h-auto">
             <img 
               src="/lovable-uploads/495eb352-ec66-420f-ad30-2b9f51c77218.png"
               alt="Logo"
-              className="w-full h-full object-cover rounded-full"
+              className="w-full h-full object-contain"
             />
-            <div className="absolute inset-0 bg-gradient-to-tr from-aurora-red/20 to-transparent mix-blend-overlay rounded-full"></div>
           </div>
         </div>
 
