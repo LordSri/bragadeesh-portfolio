@@ -44,7 +44,6 @@
   
   body {
     @apply bg-cosmic text-foreground antialiased;
-    background-image: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0a0a12 100%);
     min-height: 100vh;
     overflow-x: hidden;
   }
@@ -56,10 +55,54 @@
   }
   
   .text-glow {
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
   }
   
   .aurora-border {
     @apply border border-white/10 animate-aurora-glow;
+    position: relative;
+    overflow: hidden;
   }
+  
+  .aurora-border::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(115deg, transparent 20%, rgba(252, 58, 87, 0.3), transparent 80%);
+    background-size: 200% 200%;
+    animation: aurora-border-flow 6s linear infinite;
+  }
+  
+  @keyframes aurora-border-flow {
+    0% { background-position: 0% 0%; }
+    50% { background-position: 100% 100%; }
+    100% { background-position: 0% 0%; }
+  }
+}
+
+/* Custom animations */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Hide scrollbar but keep functionality */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
