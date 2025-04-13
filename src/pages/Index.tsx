@@ -55,7 +55,19 @@ const Index = () => {
 
       <Header />
       
-      <main className="flex-grow max-w-7xl w-full mx-auto px-4 py-8 mt-6">
+      {/* Hero Section - Inspired by sudhirshivaram.com */}
+      <section className="py-16 px-4 max-w-7xl mx-auto relative">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-br from-white to-gray-400 animate-fade-in">
+            Capturing Moments, <br className="hidden md:block" /> Creating Memories
+          </h2>
+          <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto animate-fade-in">
+            Specializing in photography, videography, cinematography, and graphic design to bring your vision to life.
+          </p>
+        </div>
+      </section>
+      
+      <main className="flex-grow max-w-7xl w-full mx-auto px-4 py-8">
         <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
         
         <div className="mt-4 mb-8">

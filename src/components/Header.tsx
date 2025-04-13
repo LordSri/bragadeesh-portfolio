@@ -1,11 +1,14 @@
+
 import React from 'react';
-import { Mail, Phone, Linkedin, Instagram, Twitter } from 'lucide-react';
+import { Mail, Phone, ExternalLink } from 'lucide-react';
+import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
+import { cn } from '@/lib/utils';
 
 const Header = () => {
   return (
     <header className="relative w-full px-4 md:px-6 lg:px-8 animate-fade-in">
       <div className="max-w-7xl mx-auto pt-8">
-        {/* Watermark logo */}
+        {/* Logo */}
         <div className="flex justify-center mb-6">
           <div className="relative w-48 h-auto">
             <img 
@@ -34,21 +37,56 @@ const Header = () => {
               </div>
             </div>
             
+            {/* Navigation Menu - Inspired by sudhirshivaram.com */}
+            <NavigationMenu className="mt-4 md:mt-0">
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className="bg-transparent hover:bg-white/10">Work</NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul className="grid gap-3 p-4 w-[220px]">
+                      <li className="row-span-3">
+                        <NavigationMenuLink asChild>
+                          <a
+                            className="flex flex-col h-full w-full select-none space-y-2 rounded-md bg-white/5 p-4 hover:bg-white/10 transition-colors"
+                            href="#"
+                          >
+                            <div className="text-lg font-medium text-white">Portfolio</div>
+                            <p className="text-sm text-gray-300">
+                              View my latest creative work and projects
+                            </p>
+                          </a>
+                        </NavigationMenuLink>
+                      </li>
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+
+                <NavigationMenuItem>
+                  <NavigationMenuLink
+                    href="/about"
+                    className={cn(navigationMenuTriggerStyle(), "bg-transparent hover:bg-white/10")}
+                  >
+                    About
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+
+                <NavigationMenuItem>
+                  <NavigationMenuLink
+                    href="/contact"
+                    className={cn(navigationMenuTriggerStyle(), "bg-transparent hover:bg-white/10")}
+                  >
+                    Contact
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
+            
+            {/* Social Icons */}
             <div className="flex gap-4 mt-4 md:mt-0">
               <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" 
                 className="h-10 w-10 rounded-full glass-panel flex items-center justify-center 
                 hover:bg-aurora-red/20 transition-colors">
-                <Linkedin size={18} />
-              </a>
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" 
-                className="h-10 w-10 rounded-full glass-panel flex items-center justify-center 
-                hover:bg-aurora-red/20 transition-colors">
-                <Instagram size={18} />
-              </a>
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" 
-                className="h-10 w-10 rounded-full glass-panel flex items-center justify-center 
-                hover:bg-aurora-red/20 transition-colors">
-                <Twitter size={18} />
+                <ExternalLink size={18} />
               </a>
             </div>
           </div>
