@@ -18,14 +18,14 @@ const TabNavigation: React.FC<TabProps> = ({ activeTab, setActiveTab }) => {
 
   return (
     <div className="w-full mb-6 overflow-x-auto scrollbar-hide">
-      <div className="glass-panel rounded-xl p-1 inline-flex min-w-full md:min-w-0 backdrop-blur-lg border-aurora-red/30">
-        <nav className="flex space-x-1">
+      <div className="w-full glass-panel rounded-xl p-1 inline-flex backdrop-blur-lg border-aurora-red/30">
+        <nav className="flex space-x-1 w-full md:justify-center">
           {tabs.map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={cn(
-                "flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300",
+                "flex-1 md:flex-initial flex items-center justify-center gap-2 px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300",
                 activeTab === tab.id 
                   ? "bg-aurora-red/20 text-white shadow-md border-b-2 border-aurora-red" 
                   : "text-gray-400 hover:text-white hover:bg-white/5"

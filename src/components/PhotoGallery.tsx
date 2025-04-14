@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Award, ChevronRight, ChevronLeft, X, Calendar, Clock, MapPin, Camera } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -196,42 +195,44 @@ const PhotoGallery: React.FC = () => {
   
   return (
     <div className="w-full">
-      <div 
-        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 auto-rows-[minmax(180px,auto)] gap-2 md:gap-3"
-        style={{ transform: `translateY(${scrollY * 0.02}px)` }}
-      >
-        {photos.map((photo) => (
-          <div 
-            key={photo.id}
-            className={cn(
-              "relative overflow-hidden rounded-xl aurora-border group cursor-pointer animate-fade-in",
-              {
-                "row-span-2": photo.aspectRatio === "3/4",
-                "col-span-2": photo.aspectRatio === "16/9" || photo.aspectRatio === "3/2",
-              }
-            )}
-            style={{ 
-              aspectRatio: photo.aspectRatio,
-              transform: `translateY(${scrollY * 0.03 * (photo.id % 3)}px)`
-            }}
-            onClick={() => handlePhotoClick(photo)}
-          >
-            <img 
-              src={photo.src} 
-              alt={photo.title} 
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-cosmic/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
-              <h3 className="text-white text-lg font-medium">{photo.title}</h3>
-              {photo.award && (
-                <div className="flex items-center mt-1">
-                  <Award size={16} className="text-aurora-red mr-1" />
-                  <span className="text-xs text-gray-300">{photo.award}</span>
-                </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 auto-rows-auto">
+        {photos.map((photo) => {
+          // Calculate dynamic sizing based on aspect ratio
+          let gridClass = ""; 
+          if (photo.aspectRatio === "3/4") {
+            gridClass = "row-span-2";
+          } else if (photo.aspectRatio === "16/9" || photo.aspectRatio === "3/2") {
+            gridClass = "col-span-2";
+          }
+          
+          return (
+            <div 
+              key={photo.id}
+              className={cn(
+                "relative overflow-hidden rounded-xl aurora-border group cursor-pointer animate-fade-in",
+                gridClass
               )}
+              onClick={() => handlePhotoClick(photo)}
+            >
+              <div className="relative w-full h-full" style={{ aspectRatio: photo.aspectRatio }}>
+                <img 
+                  src={photo.src} 
+                  alt={photo.title} 
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-cosmic/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
+                  <h3 className="text-white text-lg font-medium">{photo.title}</h3>
+                  {photo.award && (
+                    <div className="flex items-center mt-1">
+                      <Award size={16} className="text-aurora-red mr-1" />
+                      <span className="text-xs text-gray-300">{photo.award}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
       
       {/* Modal */}
