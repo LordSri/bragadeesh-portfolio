@@ -20,9 +20,6 @@ const Index = () => {
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     
-    // Set up scroll sections for navigation
-    const sectionIds = ['work', 'about', 'contact'];
-    
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
@@ -48,7 +45,7 @@ const Index = () => {
       <div 
         className="fixed inset-0 -z-10" 
         style={{ 
-          background: 'radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0a0a12 100%)',
+          background: 'radial-gradient(circle at 50% 50%, #1a0a0e 0%, #0a0808 100%)',
         }}
       >
         {/* Animated particles/stars effect */}
@@ -71,11 +68,11 @@ const Index = () => {
         
         {/* Gradient overlays that move with scroll */}
         <div 
-          className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(252,58,87,0.08)_0%,rgba(0,0,0,0)_70%)] opacity-70"
+          className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(252,58,87,0.15)_0%,rgba(0,0,0,0)_70%)] opacity-70"
           style={{ transform: `translateY(${scrollY * 0.03}px)` }}
         ></div>
         <div 
-          className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(58,87,252,0.05)_0%,rgba(0,0,0,0)_70%)] opacity-70" 
+          className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,200,200,0.05)_0%,rgba(0,0,0,0)_70%)] opacity-70" 
           style={{ transform: `translateY(${-scrollY * 0.02}px)` }}
         ></div>
       </div>
@@ -83,21 +80,26 @@ const Index = () => {
       <Header />
       
       {/* Main content with padding for fixed header */}
-      <div className="pt-20 w-full">
+      <div className="pt-24 w-full">
         {/* Hero Section with parallax effect */}
-        <section className="py-16 px-4 max-w-7xl mx-auto relative">
+        <section 
+          className="py-16 px-4 max-w-7xl mx-auto relative"
+          style={{ 
+            perspective: '1000px',
+          }}
+        >
           <div className="text-center mb-16">
             <div 
               className="mb-6 relative inline-block"
               style={{ 
-                transform: `translateY(${scrollY * 0.08}px)`,
+                transform: `translateY(${scrollY * 0.08}px) translateZ(${scrollY * 0.05}px)`,
                 opacity: Math.max(0, 1 - scrollY * 0.001) 
               }}
             >
               <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-white to-gray-400 animate-fade-in leading-tight">
                 Capturing Moments, <br className="hidden md:block" /> Creating Memories
               </h2>
-              <div className="absolute -inset-1 blur-xl bg-aurora-red/10 rounded-full -z-10"></div>
+              <div className="absolute -inset-1 blur-xl bg-red-500/10 rounded-full -z-10"></div>
             </div>
             <p 
               className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto animate-fade-in"
@@ -109,7 +111,7 @@ const Index = () => {
         </section>
         
         <main id="work" ref={workSectionRef} className="flex-grow max-w-7xl w-full mx-auto px-4 py-8 relative">
-          <div className="w-full overflow-x-auto">
+          <div className="w-full overflow-x-auto scrollbar-hide">
             <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
           </div>
           

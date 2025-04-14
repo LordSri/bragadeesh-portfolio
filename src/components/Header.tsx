@@ -1,19 +1,19 @@
 
 import React from 'react';
 import { Instagram, Award, MessageSquare } from 'lucide-react';
-import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
+import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
 import { cn } from '@/lib/utils';
 
 const Header = () => {
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
 
   return (
-    <header className="fixed top-0 left-0 w-full z-40 px-4 md:px-6 lg:px-8 bg-cosmic/80 backdrop-blur-md border-b border-white/10 animate-fade-in">
+    <header className="fixed top-0 left-0 w-full z-40 px-4 md:px-6 lg:px-8 bg-black/80 backdrop-blur-md border-b border-red-500/10 animate-fade-in">
       <div className="max-w-7xl mx-auto py-4 flex items-center justify-between">
         {/* Logo */}
         <div className="flex items-center">
@@ -33,7 +33,7 @@ const Header = () => {
               <NavigationMenuItem>
                 <NavigationMenuLink
                   onClick={() => scrollToSection('work')}
-                  className={cn(navigationMenuTriggerStyle(), "bg-transparent hover:bg-white/10 cursor-pointer")}
+                  className={cn(navigationMenuTriggerStyle(), "bg-transparent hover:bg-red-500/20 cursor-pointer")}
                 >
                   Work
                 </NavigationMenuLink>
@@ -42,7 +42,7 @@ const Header = () => {
               <NavigationMenuItem>
                 <NavigationMenuLink
                   onClick={() => scrollToSection('about')}
-                  className={cn(navigationMenuTriggerStyle(), "bg-transparent hover:bg-white/10 cursor-pointer")}
+                  className={cn(navigationMenuTriggerStyle(), "bg-transparent hover:bg-red-500/20 cursor-pointer")}
                 >
                   About
                 </NavigationMenuLink>
@@ -51,7 +51,7 @@ const Header = () => {
               <NavigationMenuItem>
                 <NavigationMenuLink
                   onClick={() => scrollToSection('contact')}
-                  className={cn(navigationMenuTriggerStyle(), "bg-transparent hover:bg-white/10 cursor-pointer")}
+                  className={cn(navigationMenuTriggerStyle(), "bg-transparent hover:bg-red-500/20 cursor-pointer")}
                 >
                   Contact
                 </NavigationMenuLink>
@@ -63,17 +63,17 @@ const Header = () => {
           <div className="flex gap-2">
             <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" 
               className="h-8 w-8 rounded-full glass-panel flex items-center justify-center 
-              hover:bg-aurora-red/20 transition-colors">
+              hover:bg-red-500/20 transition-colors">
               <Instagram size={16} />
             </a>
             <a href="#" target="_blank" rel="noopener noreferrer" 
               className="h-8 w-8 rounded-full glass-panel flex items-center justify-center 
-              hover:bg-aurora-red/20 transition-colors">
+              hover:bg-red-500/20 transition-colors">
               <Award size={16} />
             </a>
             <a href="https://wa.me/1234567890" target="_blank" rel="noopener noreferrer" 
               className="h-8 w-8 rounded-full glass-panel flex items-center justify-center 
-              hover:bg-aurora-red/20 transition-colors">
+              hover:bg-red-500/20 transition-colors">
               <MessageSquare size={16} />
             </a>
           </div>

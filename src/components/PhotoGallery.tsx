@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+
+import React, { useState, useEffect, useRef } from 'react';
 import { Award, ChevronRight, ChevronLeft, X, Calendar, Clock, MapPin, Camera, Upload } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
@@ -146,10 +147,33 @@ const PhotoGallery: React.FC = () => {
   const [beforeAfterSlider, setBeforeAfterSlider] = useState(50);
   const [userPhotos, setUserPhotos] = useState<File[]>([]);
   const [userPhotoUrls, setUserPhotoUrls] = useState<string[]>([]);
+  const [userPhotoObjects, setUserPhotoObjects] = useState<Photo[]>([]);
+  const [allPhotos, setAllPhotos] = useState<Photo[]>([]);
+  
+  // Create ref for scrolling to thumbnail
+  const thumbnailsRef = useRef<HTMLDivElement>(null);
+  
+  useEffect(() => {
+    // Combine all photos
+    setAllPhotos([...userPhotoObjects, ...photos]);
+  }, [userPhotoObjects]);
   
   const handlePhotoClick = (photo: Photo) => {
     setSelectedPhoto(photo);
     setBeforeAfterSlider(50);
+    
+    // Scroll to the thumbnail after a short delay
+    setTimeout(() => {
+      if (thumbnailsRef.current) {
+        const thumbnailElement = document.getElementById(`thumbnail-${photo.id}`);
+        if (thumbnailElement) {
+          thumbnailsRef.current.scrollTo({
+            left: thumbnailElement.offsetLeft - thumbnailsRef.current.clientWidth / 2 + thumbnailElement.clientWidth / 2,
+            behavior: 'smooth'
+          });
+        }
+      }
+    }, 100);
   };
   
   const closeModal = () => {
@@ -157,32 +181,64 @@ const PhotoGallery: React.FC = () => {
   };
   
   const navigateGallery = (direction: 'next' | 'prev') => {
-    if (!selectedPhoto) return;
+    if (!selectedPhoto || allPhotos.length === 0) return;
     
-    const currentIndex = photos.findIndex(p => p.id === selectedPhoto.id);
+    const currentIndex = allPhotos.findIndex(p => p.id === selectedPhoto.id);
+    if (currentIndex === -1) return;
+    
     let newIndex;
     
     if (direction === 'next') {
-      newIndex = currentIndex === photos.length - 1 ? 0 : currentIndex + 1;
+      newIndex = currentIndex === allPhotos.length - 1 ? 0 : currentIndex + 1;
     } else {
-      newIndex = currentIndex === 0 ? photos.length - 1 : currentIndex - 1;
+      newIndex = currentIndex === 0 ? allPhotos.length - 1 : currentIndex - 1;
     }
     
-    setSelectedPhoto(photos[newIndex]);
+    setSelectedPhoto(allPhotos[newIndex]);
     setBeforeAfterSlider(50);
+    
+    // Scroll to the new thumbnail
+    setTimeout(() => {
+      if (thumbnailsRef.current) {
+        const thumbnailElement = document.getElementById(`thumbnail-${allPhotos[newIndex].id}`);
+        if (thumbnailElement) {
+          thumbnailsRef.current.scrollTo({
+            left: thumbnailElement.offsetLeft - thumbnailsRef.current.clientWidth / 2 + thumbnailElement.clientWidth / 2,
+            behavior: 'smooth'
+          });
+        }
+      }
+    }, 100);
   };
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
-      const newPhotos = Array.from(event.target.files);
+      const newFiles = Array.from(event.target.files);
+      const newUrls = newFiles.map(file => URL.createObjectURL(file));
       
-      // Create object URLs for previewing images
-      const newUrls = newPhotos.map(file => URL.createObjectURL(file));
-      
-      setUserPhotos(prev => [...prev, ...newPhotos]);
+      setUserPhotos(prev => [...prev, ...newFiles]);
       setUserPhotoUrls(prev => [...prev, ...newUrls]);
       
-      toast.success(`${newPhotos.length} photo(s) uploaded successfully`);
+      // Create Photo objects for user uploads
+      const newPhotoObjects = newFiles.map((file, index) => {
+        const lastId = userPhotoObjects.length > 0 
+          ? userPhotoObjects[userPhotoObjects.length - 1].id 
+          : (photos.length > 0 ? photos[photos.length - 1].id : 0);
+        
+        return {
+          id: lastId + index + 1,
+          src: newUrls[index],
+          title: `User Photo ${userPhotoObjects.length + index + 1}`,
+          description: file.name,
+          aspectRatio: "auto", // Will maintain original aspect ratio
+          exif: {
+            date: new Date().toLocaleDateString()
+          }
+        };
+      });
+      
+      setUserPhotoObjects(prev => [...prev, ...newPhotoObjects]);
+      toast.success(`${newFiles.length} photo(s) uploaded successfully`);
     }
   };
 
@@ -206,10 +262,31 @@ const PhotoGallery: React.FC = () => {
     };
   }, [selectedPhoto]);
   
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (selectedPhoto) {
+        if (event.key === 'ArrowRight') {
+          navigateGallery('next');
+        } else if (event.key === 'ArrowLeft') {
+          navigateGallery('prev');
+        } else if (event.key === 'Escape') {
+          closeModal();
+        }
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [selectedPhoto, navigateGallery]);
+  
   return (
     <div className="w-full">
       {/* For development only - temporary photo uploader */}
-      <div className="mb-8 p-4 glass-panel rounded-xl border border-dashed border-white/20">
+      <div className="mb-8 p-4 glass-panel rounded-xl border border-dashed border-red-500/20">
         <h3 className="text-lg font-medium mb-2">Temporary Photo Uploader</h3>
         <p className="text-sm text-gray-400 mb-4">
           This uploader is for development purposes only. Upload photos to preview how they'll appear in the gallery.
@@ -218,7 +295,7 @@ const PhotoGallery: React.FC = () => {
           <Button 
             onClick={() => document.getElementById('photo-upload')?.click()}
             variant="outline"
-            className="flex items-center space-x-2"
+            className="flex items-center space-x-2 bg-red-500/10 hover:bg-red-500/20 border-red-500/40"
           >
             <Upload size={16} />
             <span>Select Photos</span>
@@ -246,31 +323,14 @@ const PhotoGallery: React.FC = () => {
         )}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-auto">
-        {/* Display user uploaded photos first */}
-        {userPhotoUrls.map((url, index) => (
-          <div 
-            key={`user-${index}`}
-            className="relative overflow-hidden rounded-xl shadow-lg transition-transform duration-300 hover:scale-[1.01]"
-          >
-            <img 
-              src={url} 
-              alt={`User photo ${index + 1}`} 
-              className="w-full h-full object-cover aspect-[3/2]"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-cosmic/90 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
-              <h3 className="text-white text-lg font-medium">User Photo {index + 1}</h3>
-            </div>
-          </div>
-        ))}
-        
-        {/* Display sample photos */}
-        {photos.map((photo) => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-auto">
+        {/* Show all photos (user uploaded + sample) */}
+        {allPhotos.map((photo) => (
           <div 
             key={photo.id}
             className={cn(
-              "relative overflow-hidden rounded-xl shadow-lg group cursor-pointer transition-transform duration-300 hover:scale-[1.01]",
-              photo.aspectRatio === "3/4" ? "row-span-2" : "",
+              "overflow-hidden rounded-xl shadow-lg group cursor-pointer transition-transform duration-300 hover:scale-[1.01]",
+              photo.aspectRatio === "3/4" && "row-span-2",
               (photo.aspectRatio === "16/9" || photo.aspectRatio === "3/2") && "sm:col-span-2"
             )}
             onClick={() => handlePhotoClick(photo)}
@@ -279,14 +339,13 @@ const PhotoGallery: React.FC = () => {
               <img 
                 src={photo.src} 
                 alt={photo.title} 
-                className="w-full h-full object-cover aspect-[3/2]"
-                style={{ aspectRatio: photo.aspectRatio === "3/4" ? "3/4" : "3/2" }}
+                className="w-full h-full object-contain"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-cosmic/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
                 <h3 className="text-white text-lg font-medium">{photo.title}</h3>
                 {photo.award && (
                   <div className="flex items-center mt-1">
-                    <Award size={16} className="text-aurora-red mr-1" />
+                    <Award size={16} className="text-red-500 mr-1" />
                     <span className="text-xs text-gray-300">{photo.award}</span>
                   </div>
                 )}
@@ -296,134 +355,161 @@ const PhotoGallery: React.FC = () => {
         ))}
       </div>
       
-      {/* Modal */}
+      {/* Modal with thumbnail navigation */}
       {selectedPhoto && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-cosmic/90 backdrop-blur-md animate-fade-in">
-          <div className="glass-panel rounded-xl max-w-6xl w-full max-h-[90vh] overflow-hidden relative">
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/95 backdrop-blur-lg animate-fade-in">
+          <div className="absolute top-4 right-4 z-10">
             <button 
               onClick={closeModal} 
-              className="absolute top-4 right-4 z-10 h-8 w-8 rounded-full bg-cosmic/50 flex items-center justify-center text-white hover:bg-aurora-red/50 transition-colors"
+              className="h-10 w-10 rounded-full bg-red-500/20 backdrop-blur-md flex items-center justify-center text-white hover:bg-red-500/40 transition-colors"
             >
-              <X size={18} />
+              <X size={20} />
             </button>
-
-            <div className="flex flex-col lg:flex-row h-full">
-              <div className="relative flex-1 min-h-[300px] bg-cosmic-dark flex items-center justify-center">
-                {selectedPhoto.beforeAfter ? (
-                  <div className="relative w-full h-full max-h-[70vh]">
-                    <div className="absolute inset-0 overflow-hidden">
-                      <img 
-                        src={selectedPhoto.beforeAfter.before} 
-                        alt="Before" 
-                        className="w-full h-full object-contain"
-                      />
-                    </div>
+          </div>
+          
+          <div className="relative flex-1 w-full flex items-center justify-center p-4 overflow-hidden">
+            {/* Main Image */}
+            <div className="max-h-[70vh] max-w-full overflow-hidden flex items-center justify-center">
+              {selectedPhoto.beforeAfter ? (
+                <div className="relative w-full h-full">
+                  <div className="absolute inset-0 overflow-hidden">
+                    <img 
+                      src={selectedPhoto.beforeAfter.before} 
+                      alt="Before" 
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  <div 
+                    className="absolute inset-0 overflow-hidden" 
+                    style={{ clipPath: `inset(0 0 0 ${beforeAfterSlider}%)` }}
+                  >
+                    <img 
+                      src={selectedPhoto.beforeAfter.after} 
+                      alt="After" 
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  <div className="absolute inset-0 flex items-center">
                     <div 
-                      className="absolute inset-0 overflow-hidden" 
-                      style={{ clipPath: `inset(0 0 0 ${beforeAfterSlider}%)` }}
+                      className="relative w-full"
+                      style={{ touchAction: 'none' }}
                     >
-                      <img 
-                        src={selectedPhoto.beforeAfter.after} 
-                        alt="After" 
-                        className="w-full h-full object-contain"
+                      <input 
+                        type="range" 
+                        min="0" 
+                        max="100" 
+                        value={beforeAfterSlider} 
+                        onChange={(e) => setBeforeAfterSlider(parseInt(e.target.value))} 
+                        className="w-full cursor-pointer appearance-none bg-transparent [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-12 [&::-webkit-slider-thumb]:w-2 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-red-500"
                       />
-                    </div>
-                    <div className="absolute inset-0 flex items-center">
                       <div 
-                        className="relative w-full"
-                        style={{ touchAction: 'none' }}
-                      >
-                        <input 
-                          type="range" 
-                          min="0" 
-                          max="100" 
-                          value={beforeAfterSlider} 
-                          onChange={(e) => setBeforeAfterSlider(parseInt(e.target.value))} 
-                          className="w-full cursor-pointer appearance-none bg-transparent [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-12 [&::-webkit-slider-thumb]:w-2 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-aurora-red"
-                        />
-                        <div 
-                          className="absolute top-1/2 w-0.5 h-full bg-white pointer-events-none transform -translate-y-1/2" 
-                          style={{ left: `${beforeAfterSlider}%` }}
-                        />
-                      </div>
-                    </div>
-                    <div className="absolute top-4 left-4 glass-panel p-2 px-3 rounded-full text-xs font-medium">
-                      Before / After
+                        className="absolute top-1/2 w-0.5 h-full bg-white pointer-events-none transform -translate-y-1/2" 
+                        style={{ left: `${beforeAfterSlider}%` }}
+                      />
                     </div>
                   </div>
-                ) : (
-                  <img 
-                    src={selectedPhoto.src} 
-                    alt={selectedPhoto.title} 
-                    className="w-full h-full object-contain max-h-[70vh]"
-                  />
-                )}
-                
-                {/* Navigation arrows */}
-                <button 
-                  onClick={() => navigateGallery('prev')} 
-                  className="absolute left-4 top-1/2 transform -translate-y-1/2 h-10 w-10 rounded-full glass-panel flex items-center justify-center hover:bg-aurora-red/20 transition-colors"
-                >
-                  <ChevronLeft size={24} />
-                </button>
-                <button 
-                  onClick={() => navigateGallery('next')} 
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 h-10 w-10 rounded-full glass-panel flex items-center justify-center hover:bg-aurora-red/20 transition-colors"
-                >
-                  <ChevronRight size={24} />
-                </button>
+                  <div className="absolute top-4 left-4 glass-panel p-2 px-3 rounded-full text-xs font-medium">
+                    Before / After
+                  </div>
+                </div>
+              ) : (
+                <img 
+                  src={selectedPhoto.src} 
+                  alt={selectedPhoto.title} 
+                  className="max-w-full max-h-[70vh] object-contain"
+                />
+              )}
+            </div>
+            
+            {/* Navigation arrows */}
+            <button 
+              onClick={() => navigateGallery('prev')} 
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 h-12 w-12 rounded-full glass-panel backdrop-blur-md flex items-center justify-center hover:bg-red-500/20 transition-colors"
+              aria-label="Previous photo"
+            >
+              <ChevronLeft size={28} />
+            </button>
+            <button 
+              onClick={() => navigateGallery('next')} 
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 h-12 w-12 rounded-full glass-panel backdrop-blur-md flex items-center justify-center hover:bg-red-500/20 transition-colors"
+              aria-label="Next photo"
+            >
+              <ChevronRight size={28} />
+            </button>
+          </div>
+          
+          {/* Photo Info */}
+          <div className="mt-4 px-4 max-w-3xl mx-auto">
+            <div className="flex justify-between items-start">
+              <div>
+                <h2 className="text-xl font-bold mb-1">{selectedPhoto.title}</h2>
+                <p className="text-gray-300 text-sm">{selectedPhoto.description}</p>
               </div>
               
-              <div className="p-6 flex-shrink-0 w-full lg:w-96 bg-cosmic-dark/50">
-                <h2 className="text-xl font-bold mb-2">{selectedPhoto.title}</h2>
-                <p className="text-gray-300 mb-4">{selectedPhoto.description}</p>
-                
-                {selectedPhoto.award && (
-                  <div className="flex items-center p-3 mb-4 glass-panel rounded-lg">
-                    <Award size={20} className="text-aurora-red mr-3 flex-shrink-0" />
-                    <div>
-                      <span className="block text-xs text-gray-400">Award Winner</span>
-                      <span className="text-sm font-medium">{selectedPhoto.award}</span>
-                    </div>
-                  </div>
-                )}
-                
-                {selectedPhoto.exif && (
-                  <div className="space-y-2 my-4">
-                    <h3 className="text-sm font-semibold text-gray-300">EXIF Data</h3>
-                    <div className="glass-panel rounded-lg p-3 space-y-3">
-                      {selectedPhoto.exif.camera && (
-                        <div className="flex items-center">
-                          <Camera size={16} className="text-aurora-red mr-2 flex-shrink-0" />
-                          <span className="text-sm">{selectedPhoto.exif.camera}</span>
-                        </div>
-                      )}
-                      {selectedPhoto.exif.date && (
-                        <div className="flex items-center">
-                          <Calendar size={16} className="text-aurora-red mr-2 flex-shrink-0" />
-                          <span className="text-sm">{selectedPhoto.exif.date}</span>
-                        </div>
-                      )}
-                      {selectedPhoto.exif.location && (
-                        <div className="flex items-center">
-                          <MapPin size={16} className="text-aurora-red mr-2 flex-shrink-0" />
-                          <span className="text-sm">{selectedPhoto.exif.location}</span>
-                        </div>
-                      )}
-                      {selectedPhoto.exif.exposure && (
-                        <div className="flex items-center">
-                          <Clock size={16} className="text-aurora-red mr-2 flex-shrink-0" />
-                          <span className="text-sm">{selectedPhoto.exif.exposure}</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
-                
-                <div className="mt-auto pt-4 text-sm text-gray-400">
-                  Photo {photos.findIndex(p => p.id === selectedPhoto.id) + 1} of {photos.length}
+              {selectedPhoto.award && (
+                <div className="flex items-center p-2 glass-panel rounded-lg">
+                  <Award size={16} className="text-red-500 mr-2 flex-shrink-0" />
+                  <span className="text-xs">{selectedPhoto.award}</span>
                 </div>
+              )}
+            </div>
+            
+            {selectedPhoto.exif && (
+              <div className="mt-3 flex flex-wrap gap-4 text-xs text-gray-400">
+                {selectedPhoto.exif.camera && (
+                  <div className="flex items-center">
+                    <Camera size={14} className="text-red-500 mr-1 flex-shrink-0" />
+                    <span>{selectedPhoto.exif.camera}</span>
+                  </div>
+                )}
+                {selectedPhoto.exif.date && (
+                  <div className="flex items-center">
+                    <Calendar size={14} className="text-red-500 mr-1 flex-shrink-0" />
+                    <span>{selectedPhoto.exif.date}</span>
+                  </div>
+                )}
+                {selectedPhoto.exif.location && (
+                  <div className="flex items-center">
+                    <MapPin size={14} className="text-red-500 mr-1 flex-shrink-0" />
+                    <span>{selectedPhoto.exif.location}</span>
+                  </div>
+                )}
+                {selectedPhoto.exif.exposure && (
+                  <div className="flex items-center">
+                    <Clock size={14} className="text-red-500 mr-1 flex-shrink-0" />
+                    <span>{selectedPhoto.exif.exposure}</span>
+                  </div>
+                )}
               </div>
+            )}
+          </div>
+          
+          {/* Thumbnail Navigation */}
+          <div 
+            ref={thumbnailsRef}
+            className="w-full mt-4 pb-4 px-4 overflow-x-auto scrollbar-hide"
+          >
+            <div className="flex space-x-2 min-w-max px-4">
+              {allPhotos.map((photo) => (
+                <button
+                  key={`thumbnail-${photo.id}`}
+                  id={`thumbnail-${photo.id}`}
+                  onClick={() => handlePhotoClick(photo)}
+                  className={cn(
+                    "relative transition-all duration-200 flex-shrink-0 rounded-md overflow-hidden border-2",
+                    selectedPhoto.id === photo.id 
+                      ? "border-red-500 opacity-100 transform scale-105" 
+                      : "border-transparent opacity-70 grayscale hover:opacity-90 hover:grayscale-0"
+                  )}
+                  style={{ width: '80px', height: '60px' }}
+                >
+                  <img 
+                    src={photo.src} 
+                    alt={photo.title} 
+                    className="w-full h-full object-cover"
+                  />
+                </button>
+              ))}
             </div>
           </div>
         </div>
