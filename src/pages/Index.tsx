@@ -77,7 +77,7 @@ const Index = () => {
         ></div>
       </div>
 
-      <Header scrollY={scrollY} />
+      <Header />
       
       {/* Main content with padding for fixed header */}
       <div className="pt-24 w-full">
@@ -96,13 +96,13 @@ const Index = () => {
                 opacity: Math.max(0, 1 - scrollY * 0.001) 
               }}
             >
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-white to-gray-400 animate-fade-in leading-tight">
+              <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-white to-gray-400 animate-fade-in leading-tight">
                 Capturing Moments, <br className="hidden md:block" /> Creating Memories
               </h2>
               <div className="absolute -inset-1 blur-xl bg-red-500/10 rounded-full -z-10"></div>
             </div>
             <p 
-              className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto animate-fade-in mt-6"
+              className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto animate-fade-in"
               style={{ transform: `translateY(${scrollY * 0.05}px)` }}
             >
               Specializing in photography, videography, cinematography, and graphic design to bring your vision to life.
@@ -121,7 +121,7 @@ const Index = () => {
         </main>
       </div>
       
-      <Footer scrollY={scrollY} />
+      <Footer />
     </div>
   );
 };
