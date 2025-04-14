@@ -50,7 +50,8 @@ const PhotoGallery: React.FC = () => {
       newIndex = currentIndex === 0 ? photos.length - 1 : currentIndex - 1;
     }
     
-    setSelectedPhoto(photos[newIndex]);
+    // Enhanced smooth transition
+    setSelectedPhoto(prev => ({...photos[newIndex]}));
   };
   
   // Keyboard navigation
@@ -99,7 +100,7 @@ const PhotoGallery: React.FC = () => {
         </div>
       )}
       
-      {/* Modal with selected photo and thumbnail navigation */}
+      {/* Modal with selected photo */}
       {selectedPhoto && (
         <>
           <PhotoModal 
@@ -112,7 +113,7 @@ const PhotoGallery: React.FC = () => {
           <PhotoThumbnailNav 
             photos={photos}
             selectedPhoto={selectedPhoto}
-            onThumbnailClick={handlePhotoClick}
+            onThumbnailClick={setSelectedPhoto}
           />
         </>
       )}

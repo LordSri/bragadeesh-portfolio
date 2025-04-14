@@ -1,10 +1,35 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Instagram, Award, MessageSquare } from 'lucide-react';
 import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
 import { cn } from '@/lib/utils';
 
-const Header = () => {
+interface HeaderProps {
+  scrollY: number;
+}
+
+const Header: React.FC<HeaderProps> = ({ scrollY }) => {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [height, setHeight] = useState(0);
+  
+  useEffect(() => {
+    // Threshold to consider when header should transform
+    const scrollThreshold = 50;
+    setIsScrolled(scrollY > scrollThreshold);
+    
+    // Get viewport height for calculations
+    setHeight(window.innerHeight);
+    
+    const handleResize = () => {
+      setHeight(window.innerHeight);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [scrollY]);
+
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
@@ -13,8 +38,15 @@ const Header = () => {
   };
 
   return (
-    <header className="fixed top-0 left-0 w-full z-40 px-4 md:px-6 lg:px-8 bg-black/80 backdrop-blur-md border-b border-red-500/10 animate-fade-in">
-      <div className="max-w-7xl mx-auto py-4 flex items-center justify-between">
+    <header 
+      className={cn(
+        "fixed top-0 left-0 w-full z-40 px-4 md:px-6 lg:px-8 transition-all duration-300",
+        isScrolled 
+          ? "bg-black/70 backdrop-blur-md py-2 border-none mx-auto max-w-7xl left-1/2 -translate-x-1/2 rounded-b-xl mt-2" 
+          : "bg-black/80 backdrop-blur-md border-b border-red-500/10 py-4"
+      )}
+    >
+      <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Logo */}
         <div className="flex items-center">
           <div className="h-10 w-auto">

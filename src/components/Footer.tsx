@@ -1,15 +1,67 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Instagram, Award, MessageSquare, Mail } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
+import { cn } from '@/lib/utils';
 
-const Footer: React.FC = () => {
+interface FooterProps {
+  scrollY: number;
+}
+
+const Footer: React.FC<FooterProps> = ({ scrollY }) => {
   const currentYear = new Date().getFullYear();
+  const [isDockedToBottom, setIsDockedToBottom] = useState(false);
+  const [documentHeight, setDocumentHeight] = useState(0);
+  const [viewportHeight, setViewportHeight] = useState(0);
+  
+  useEffect(() => {
+    const updateHeights = () => {
+      // Get document height (total scrollable area)
+      const docHeight = Math.max(
+        document.body.scrollHeight,
+        document.documentElement.scrollHeight,
+        document.body.offsetHeight,
+        document.documentElement.offsetHeight,
+        document.body.clientHeight,
+        document.documentElement.clientHeight
+      );
+      
+      setDocumentHeight(docHeight);
+      setViewportHeight(window.innerHeight);
+    };
+    
+    // Initial measurement
+    updateHeights();
+    
+    // Check if scrolled to bottom (with a small threshold)
+    const threshold = 50; // pixels from bottom
+    const isAtBottom = scrollY + viewportHeight >= documentHeight - threshold;
+    setIsDockedToBottom(isAtBottom);
+    
+    // Update measurements on resize
+    window.addEventListener('resize', updateHeights);
+    return () => {
+      window.removeEventListener('resize', updateHeights);
+    };
+  }, [scrollY, viewportHeight, documentHeight]);
   
   return (
-    <footer className="w-full py-12 mt-16">
+    <footer 
+      className={cn(
+        "w-full py-12 mt-16 transition-all duration-300",
+        isDockedToBottom 
+          ? "rounded-t-none" 
+          : "max-w-7xl mx-auto px-4"
+      )}
+    >
       <div className="max-w-7xl mx-auto px-4">
-        <div id="about" className="glass-panel rounded-xl p-8 backdrop-blur-md border border-white/5 mb-8">
+        <div 
+          id="about" 
+          className={cn(
+            "glass-panel backdrop-blur-md border border-white/5 mb-8",
+            isDockedToBottom ? "rounded-t-none p-8" : "rounded-xl p-8"
+          )}
+        >
           <h2 className="text-2xl font-bold mb-6 text-white">About Me</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
@@ -39,7 +91,13 @@ const Footer: React.FC = () => {
           </div>
         </div>
         
-        <div id="contact" className="glass-panel rounded-xl p-8 backdrop-blur-md border border-white/5">
+        <div 
+          id="contact" 
+          className={cn(
+            "glass-panel backdrop-blur-md border border-white/5",
+            isDockedToBottom ? "rounded-t-none p-8" : "rounded-xl p-8"
+          )}
+        >
           <h2 className="text-2xl font-bold mb-6 text-white">Let's Connect</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
