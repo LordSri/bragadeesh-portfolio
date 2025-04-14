@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Award, ChevronRight, ChevronLeft, X, Calendar, Clock, MapPin, Camera } from 'lucide-react';
+import { Award, ChevronRight, ChevronLeft, X, Calendar, Clock, MapPin, Camera, Upload } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 
 interface Photo {
   id: number;
@@ -142,18 +144,8 @@ const photos: Photo[] = [
 const PhotoGallery: React.FC = () => {
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
   const [beforeAfterSlider, setBeforeAfterSlider] = useState(50);
-  const [scrollY, setScrollY] = useState(0);
-  
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
-    
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
+  const [userPhotos, setUserPhotos] = useState<File[]>([]);
+  const [userPhotoUrls, setUserPhotoUrls] = useState<string[]>([]);
   
   const handlePhotoClick = (photo: Photo) => {
     setSelectedPhoto(photo);
@@ -179,9 +171,30 @@ const PhotoGallery: React.FC = () => {
     setSelectedPhoto(photos[newIndex]);
     setBeforeAfterSlider(50);
   };
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      const newPhotos = Array.from(event.target.files);
+      
+      // Create object URLs for previewing images
+      const newUrls = newPhotos.map(file => URL.createObjectURL(file));
+      
+      setUserPhotos(prev => [...prev, ...newPhotos]);
+      setUserPhotoUrls(prev => [...prev, ...newUrls]);
+      
+      toast.success(`${newPhotos.length} photo(s) uploaded successfully`);
+    }
+  };
+
+  // Clean up object URLs when component unmounts
+  useEffect(() => {
+    return () => {
+      userPhotoUrls.forEach(url => URL.revokeObjectURL(url));
+    };
+  }, [userPhotoUrls]);
   
   // Prevent scrolling when modal is open
-  React.useEffect(() => {
+  useEffect(() => {
     if (selectedPhoto) {
       document.body.style.overflow = 'hidden';
     } else {
@@ -195,44 +208,92 @@ const PhotoGallery: React.FC = () => {
   
   return (
     <div className="w-full">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 auto-rows-auto">
-        {photos.map((photo) => {
-          // Calculate dynamic sizing based on aspect ratio
-          let gridClass = ""; 
-          if (photo.aspectRatio === "3/4") {
-            gridClass = "row-span-2";
-          } else if (photo.aspectRatio === "16/9" || photo.aspectRatio === "3/2") {
-            gridClass = "col-span-2";
-          }
-          
-          return (
-            <div 
-              key={photo.id}
-              className={cn(
-                "relative overflow-hidden rounded-xl aurora-border group cursor-pointer animate-fade-in",
-                gridClass
-              )}
-              onClick={() => handlePhotoClick(photo)}
-            >
-              <div className="relative w-full h-full" style={{ aspectRatio: photo.aspectRatio }}>
-                <img 
-                  src={photo.src} 
-                  alt={photo.title} 
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-cosmic/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
-                  <h3 className="text-white text-lg font-medium">{photo.title}</h3>
-                  {photo.award && (
-                    <div className="flex items-center mt-1">
-                      <Award size={16} className="text-aurora-red mr-1" />
-                      <span className="text-xs text-gray-300">{photo.award}</span>
-                    </div>
-                  )}
-                </div>
+      {/* For development only - temporary photo uploader */}
+      <div className="mb-8 p-4 glass-panel rounded-xl border border-dashed border-white/20">
+        <h3 className="text-lg font-medium mb-2">Temporary Photo Uploader</h3>
+        <p className="text-sm text-gray-400 mb-4">
+          This uploader is for development purposes only. Upload photos to preview how they'll appear in the gallery.
+        </p>
+        <div className="flex items-center space-x-4">
+          <Button 
+            onClick={() => document.getElementById('photo-upload')?.click()}
+            variant="outline"
+            className="flex items-center space-x-2"
+          >
+            <Upload size={16} />
+            <span>Select Photos</span>
+          </Button>
+          <input 
+            id="photo-upload" 
+            type="file" 
+            multiple 
+            accept="image/*" 
+            onChange={handleFileUpload} 
+            className="hidden"
+          />
+          {userPhotos.length > 0 && (
+            <span className="text-sm text-gray-300">{userPhotos.length} photo(s) selected</span>
+          )}
+        </div>
+        {userPhotoUrls.length > 0 && (
+          <div className="mt-4 flex flex-wrap gap-2">
+            {userPhotoUrls.map((url, index) => (
+              <div key={index} className="w-16 h-16 rounded-md overflow-hidden">
+                <img src={url} alt={`Upload ${index + 1}`} className="w-full h-full object-cover" />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-auto">
+        {/* Display user uploaded photos first */}
+        {userPhotoUrls.map((url, index) => (
+          <div 
+            key={`user-${index}`}
+            className="relative overflow-hidden rounded-xl shadow-lg transition-transform duration-300 hover:scale-[1.01]"
+          >
+            <img 
+              src={url} 
+              alt={`User photo ${index + 1}`} 
+              className="w-full h-full object-cover aspect-[3/2]"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-cosmic/90 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+              <h3 className="text-white text-lg font-medium">User Photo {index + 1}</h3>
+            </div>
+          </div>
+        ))}
+        
+        {/* Display sample photos */}
+        {photos.map((photo) => (
+          <div 
+            key={photo.id}
+            className={cn(
+              "relative overflow-hidden rounded-xl shadow-lg group cursor-pointer transition-transform duration-300 hover:scale-[1.01]",
+              photo.aspectRatio === "3/4" ? "row-span-2" : "",
+              (photo.aspectRatio === "16/9" || photo.aspectRatio === "3/2") && "sm:col-span-2"
+            )}
+            onClick={() => handlePhotoClick(photo)}
+          >
+            <div className="relative w-full h-full">
+              <img 
+                src={photo.src} 
+                alt={photo.title} 
+                className="w-full h-full object-cover aspect-[3/2]"
+                style={{ aspectRatio: photo.aspectRatio === "3/4" ? "3/4" : "3/2" }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-cosmic/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+                <h3 className="text-white text-lg font-medium">{photo.title}</h3>
+                {photo.award && (
+                  <div className="flex items-center mt-1">
+                    <Award size={16} className="text-aurora-red mr-1" />
+                    <span className="text-xs text-gray-300">{photo.award}</span>
+                  </div>
+                )}
               </div>
             </div>
-          );
-        })}
+          </div>
+        ))}
       </div>
       
       {/* Modal */}

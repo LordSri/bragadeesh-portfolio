@@ -17,8 +17,8 @@ const TabNavigation: React.FC<TabProps> = ({ activeTab, setActiveTab }) => {
   ];
 
   return (
-    <div className="w-full mb-6 overflow-x-auto scrollbar-hide">
-      <div className="w-full glass-panel rounded-xl p-1 inline-flex backdrop-blur-lg border-aurora-red/30">
+    <div className="w-full mb-8 overflow-x-auto scrollbar-hide">
+      <div className="w-full glass-panel rounded-xl p-1.5 inline-flex backdrop-blur-lg border-aurora-red/20 shadow-lg">
         <nav className="flex space-x-1 w-full md:justify-center">
           {tabs.map(tab => (
             <button

@@ -1,15 +1,47 @@
 
 import React from 'react';
-import { Instagram, Linkedin, Twitter, Mail } from 'lucide-react';
+import { Instagram, Award, MessageSquare, Mail } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
   
   return (
-    <footer className="w-full py-12">
+    <footer className="w-full py-12 mt-16">
       <div className="max-w-7xl mx-auto px-4">
-        <div className="glass-panel rounded-xl p-8 backdrop-blur-md border border-white/5">
+        <div id="about" className="glass-panel rounded-xl p-8 backdrop-blur-md border border-white/5 mb-8">
+          <h2 className="text-2xl font-bold mb-6 text-white">About Me</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+              <p className="text-gray-300 leading-relaxed">
+                I am a creative professional with a passion for visual storytelling. My work spans across photography, 
+                videography, cinematography, and graphic design, always striving to capture moments and emotions 
+                that resonate with audiences.
+              </p>
+              <p className="text-gray-300 leading-relaxed mt-4">
+                With over 5 years of experience in the industry, I've had the opportunity to work with various clients, 
+                from small businesses to major brands, helping them tell their stories through compelling visual content.
+              </p>
+            </div>
+            <div className="flex flex-col space-y-4">
+              <h3 className="text-xl font-semibold text-white">Experience</h3>
+              <div className="space-y-2">
+                <div className="glass-panel p-3 rounded-lg">
+                  <h4 className="font-medium">Senior Photographer</h4>
+                  <p className="text-sm text-gray-400">Creative Studio • 2020-Present</p>
+                </div>
+                <div className="glass-panel p-3 rounded-lg">
+                  <h4 className="font-medium">Videographer</h4>
+                  <p className="text-sm text-gray-400">Media Productions • 2018-2020</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div id="contact" className="glass-panel rounded-xl p-8 backdrop-blur-md border border-white/5">
+          <h2 className="text-2xl font-bold mb-6 text-white">Let's Connect</h2>
+          
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
               <h3 className="text-xl font-semibold mb-4 text-white">Jane Doe</h3>
@@ -23,40 +55,40 @@ const Footer: React.FC = () => {
             </div>
             
             <div>
-              <h3 className="text-xl font-semibold mb-4 text-white">Contact</h3>
-              <div className="space-y-2 text-sm text-gray-400">
-                <div className="flex items-center gap-2">
-                  <Mail size={16} className="text-aurora-red" />
-                  <a href="mailto:jane.doe@example.com" className="hover:text-white transition-colors">
-                    jane.doe@example.com
-                  </a>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-aurora-red">☎</span>
-                  <a href="tel:+11234567890" className="hover:text-white transition-colors">
-                    (123) 456-7890
-                  </a>
-                </div>
+              <h3 className="text-xl font-semibold mb-4 text-white">Get in Touch</h3>
+              <div className="space-y-4">
+                <a href="mailto:jane.doe@example.com" className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors group">
+                  <div className="h-10 w-10 rounded-full glass-panel flex items-center justify-center group-hover:bg-aurora-red/20 transition-colors">
+                    <Mail size={18} />
+                  </div>
+                  <span>Send me an email</span>
+                </a>
+                <a href="https://wa.me/1234567890" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors group">
+                  <div className="h-10 w-10 rounded-full glass-panel flex items-center justify-center group-hover:bg-aurora-red/20 transition-colors">
+                    <MessageSquare size={18} />
+                  </div>
+                  <span>Message on WhatsApp</span>
+                </a>
               </div>
             </div>
             
             <div>
-              <h3 className="text-xl font-semibold mb-4 text-white">Connect</h3>
-              <div className="flex gap-4">
-                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" 
-                  className="h-10 w-10 rounded-full glass-panel flex items-center justify-center 
-                  hover:bg-aurora-red/20 transition-colors">
-                  <Linkedin size={18} />
-                </a>
+              <h3 className="text-xl font-semibold mb-4 text-white">Follow Me</h3>
+              <div className="flex gap-3 flex-wrap">
                 <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" 
-                  className="h-10 w-10 rounded-full glass-panel flex items-center justify-center 
-                  hover:bg-aurora-red/20 transition-colors">
-                  <Instagram size={18} />
+                  className="h-12 w-12 rounded-full glass-panel flex items-center justify-center 
+                  hover:bg-aurora-red/20 transition-all hover:scale-110">
+                  <Instagram size={20} />
                 </a>
-                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" 
-                  className="h-10 w-10 rounded-full glass-panel flex items-center justify-center 
-                  hover:bg-aurora-red/20 transition-colors">
-                  <Twitter size={18} />
+                <a href="#" target="_blank" rel="noopener noreferrer" 
+                  className="h-12 w-12 rounded-full glass-panel flex items-center justify-center 
+                  hover:bg-aurora-red/20 transition-all hover:scale-110">
+                  <Award size={20} />
+                </a>
+                <a href="https://wa.me/1234567890" target="_blank" rel="noopener noreferrer" 
+                  className="h-12 w-12 rounded-full glass-panel flex items-center justify-center 
+                  hover:bg-aurora-red/20 transition-all hover:scale-110">
+                  <MessageSquare size={20} />
                 </a>
               </div>
             </div>

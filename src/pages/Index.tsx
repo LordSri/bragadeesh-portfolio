@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Header from '@/components/Header';
 import TabNavigation from '@/components/TabNavigation';
 import PhotoGallery from '@/components/PhotoGallery';
@@ -11,6 +11,7 @@ import Footer from '@/components/Footer';
 const Index = () => {
   const [activeTab, setActiveTab] = useState('photos');
   const [scrollY, setScrollY] = useState(0);
+  const workSectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -18,6 +19,10 @@ const Index = () => {
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    // Set up scroll sections for navigation
+    const sectionIds = ['work', 'about', 'contact'];
+    
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
@@ -41,40 +46,74 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <div 
-        className="fixed inset-0 -z-10 bg-cosmic" 
+        className="fixed inset-0 -z-10" 
         style={{ 
-          backgroundImage: 'radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0a0a12 100%)',
-          backgroundSize: '200% 200%',
-          backgroundPosition: `${50 + scrollY * 0.02}% ${50 + scrollY * 0.02}%`
+          background: 'radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0a0a12 100%)',
         }}
       >
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(252,58,87,0.08)_0%,rgba(0,0,0,0)_70%)] opacity-70"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(58,87,252,0.05)_0%,rgba(0,0,0,0)_70%)] opacity-70" 
-          style={{ transform: `translateY(${scrollY * 0.1}px)` }}></div>
+        {/* Animated particles/stars effect */}
+        <div className="stars-container absolute inset-0 opacity-70">
+          {[...Array(20)].map((_, i) => (
+            <div 
+              key={i}
+              className="absolute bg-white rounded-full animate-pulse-slow" 
+              style={{
+                width: `${Math.random() * 2 + 1}px`,
+                height: `${Math.random() * 2 + 1}px`,
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 5}s`,
+                opacity: Math.random() * 0.5 + 0.3
+              }}
+            />
+          ))}
+        </div>
+        
+        {/* Gradient overlays that move with scroll */}
+        <div 
+          className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(252,58,87,0.08)_0%,rgba(0,0,0,0)_70%)] opacity-70"
+          style={{ transform: `translateY(${scrollY * 0.03}px)` }}
+        ></div>
+        <div 
+          className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(58,87,252,0.05)_0%,rgba(0,0,0,0)_70%)] opacity-70" 
+          style={{ transform: `translateY(${-scrollY * 0.02}px)` }}
+        ></div>
       </div>
 
       <Header />
       
       {/* Main content with padding for fixed header */}
       <div className="pt-20 w-full">
-        {/* Hero Section */}
+        {/* Hero Section with parallax effect */}
         <section className="py-16 px-4 max-w-7xl mx-auto relative">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-br from-white to-gray-400 animate-fade-in">
-              Capturing Moments, <br className="hidden md:block" /> Creating Memories
-            </h2>
-            <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto animate-fade-in">
+            <div 
+              className="mb-6 relative inline-block"
+              style={{ 
+                transform: `translateY(${scrollY * 0.08}px)`,
+                opacity: Math.max(0, 1 - scrollY * 0.001) 
+              }}
+            >
+              <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-white to-gray-400 animate-fade-in leading-tight">
+                Capturing Moments, <br className="hidden md:block" /> Creating Memories
+              </h2>
+              <div className="absolute -inset-1 blur-xl bg-aurora-red/10 rounded-full -z-10"></div>
+            </div>
+            <p 
+              className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto animate-fade-in"
+              style={{ transform: `translateY(${scrollY * 0.05}px)` }}
+            >
               Specializing in photography, videography, cinematography, and graphic design to bring your vision to life.
             </p>
           </div>
         </section>
         
-        <main className="flex-grow max-w-7xl w-full mx-auto px-4 py-8">
+        <main id="work" ref={workSectionRef} className="flex-grow max-w-7xl w-full mx-auto px-4 py-8 relative">
           <div className="w-full overflow-x-auto">
             <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
           </div>
           
-          <div className="mt-4 mb-8">
+          <div className="mt-8 mb-16">
             {renderTabContent()}
           </div>
         </main>
