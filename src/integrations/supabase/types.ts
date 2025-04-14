@@ -9,7 +9,48 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      photo_metadata: {
+        Row: {
+          aspect_ratio: string | null
+          award: string | null
+          before_after: Json | null
+          created_at: string
+          description: string | null
+          exif: Json | null
+          file_name: string
+          id: string
+          storage_id: string
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          aspect_ratio?: string | null
+          award?: string | null
+          before_after?: Json | null
+          created_at?: string
+          description?: string | null
+          exif?: Json | null
+          file_name: string
+          id?: string
+          storage_id: string
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          aspect_ratio?: string | null
+          award?: string | null
+          before_after?: Json | null
+          created_at?: string
+          description?: string | null
+          exif?: Json | null
+          file_name?: string
+          id?: string
+          storage_id?: string
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
