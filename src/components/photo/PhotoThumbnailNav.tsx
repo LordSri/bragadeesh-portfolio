@@ -1,5 +1,5 @@
 
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Photo } from '@/utils/photoUtils';
 import { cn } from '@/lib/utils';
 
@@ -15,6 +15,28 @@ const PhotoThumbnailNav: React.FC<PhotoThumbnailNavProps> = ({
   onThumbnailClick
 }) => {
   const thumbnailsRef = useRef<HTMLDivElement>(null);
+  const selectedThumbnailRef = useRef<HTMLButtonElement>(null);
+  
+  // Scroll selected thumbnail into view
+  useEffect(() => {
+    if (selectedPhoto && thumbnailsRef.current && selectedThumbnailRef.current) {
+      // Smooth scroll to the selected thumbnail
+      const container = thumbnailsRef.current;
+      const element = selectedThumbnailRef.current;
+      
+      const containerRect = container.getBoundingClientRect();
+      const elementRect = element.getBoundingClientRect();
+      
+      // Calculate if element is out of view
+      if (elementRect.left < containerRect.left || elementRect.right > containerRect.right) {
+        // Scroll to make the element centered in the container
+        container.scrollTo({
+          left: element.offsetLeft - (container.clientWidth / 2) + (element.offsetWidth / 2),
+          behavior: 'smooth'
+        });
+      }
+    }
+  }, [selectedPhoto]);
   
   return (
     <div 
@@ -24,6 +46,7 @@ const PhotoThumbnailNav: React.FC<PhotoThumbnailNavProps> = ({
       <div className="flex space-x-2 min-w-max px-4">
         {photos.map((photo) => (
           <button
+            ref={selectedPhoto?.id === photo.id ? selectedThumbnailRef : undefined}
             key={`thumbnail-${photo.id}`}
             id={`thumbnail-${photo.id}`}
             onClick={() => onThumbnailClick(photo)}

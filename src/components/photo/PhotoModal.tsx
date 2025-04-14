@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Photo, ExifData, updatePhotoMetadata, deletePhoto } from '@/utils/photoUtils';
-import { ChevronRight, ChevronLeft, X, Calendar, Clock, MapPin, Camera, Pencil, Save, Trash2, Download } from 'lucide-react';
+import { ChevronRight, ChevronLeft, X, Calendar, Clock, MapPin, Camera, Pencil, Save, Trash2, Download, Award } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

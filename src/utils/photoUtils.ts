@@ -2,17 +2,20 @@
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
+import { Json } from "@/integrations/supabase/types";
 
 export interface ExifData {
   camera?: string;
   date?: string;
   location?: string;
   exposure?: string;
+  [key: string]: string | undefined; // Add index signature to make compatible with Json type
 }
 
 export interface BeforeAfterData {
   before: string;
   after: string;
+  [key: string]: string; // Add index signature to make compatible with Json type
 }
 
 export interface Photo {
@@ -66,8 +69,8 @@ export const savePhotoMetadata = async (photo: Omit<Photo, 'id'>): Promise<strin
         description: photo.description,
         award: photo.award,
         aspect_ratio: photo.aspectRatio,
-        exif: photo.exif,
-        before_after: photo.beforeAfter
+        exif: photo.exif as unknown as Json,
+        before_after: photo.beforeAfter as unknown as Json
       })
       .select('id')
       .single();
@@ -101,10 +104,10 @@ export const fetchPhotoMetadata = async (): Promise<Photo[]> => {
       src: getPublicUrl(item.storage_id),
       title: item.title || 'Untitled',
       description: item.description || '',
-      award: item.award,
+      award: item.award || undefined,
       aspectRatio: item.aspect_ratio || 'auto',
-      exif: item.exif,
-      beforeAfter: item.before_after,
+      exif: item.exif as unknown as ExifData,
+      beforeAfter: item.before_after as unknown as BeforeAfterData,
       storageId: item.storage_id,
       fileName: item.file_name
     }));
@@ -125,8 +128,8 @@ export const updatePhotoMetadata = async (id: string, updates: Partial<Photo>): 
         description: updates.description,
         award: updates.award,
         aspect_ratio: updates.aspectRatio,
-        exif: updates.exif,
-        before_after: updates.beforeAfter
+        exif: updates.exif as unknown as Json,
+        before_after: updates.beforeAfter as unknown as Json
       })
       .eq('id', id);
 
