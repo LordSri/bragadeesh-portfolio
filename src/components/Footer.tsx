@@ -3,7 +3,11 @@ import React from 'react';
 import { Instagram, Award, MessageSquare, Mail } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 
-const Footer: React.FC = () => {
+interface FooterProps {
+  footerDocked?: boolean;
+}
+
+const Footer: React.FC<FooterProps> = ({ footerDocked = false }) => {
   const currentYear = new Date().getFullYear();
   
   return (
@@ -39,7 +43,12 @@ const Footer: React.FC = () => {
           </div>
         </div>
         
-        <div id="contact" className="glass-panel rounded-xl p-8 backdrop-blur-md border border-white/5">
+        <div 
+          id="contact" 
+          className={`${
+            footerDocked ? 'footer-contact-docked' : 'footer-contact-float'
+          } glass-panel backdrop-blur-md border border-white/5 p-8`}
+        >
           <h2 className="text-2xl font-bold mb-6 text-white">Let's Connect</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

@@ -99,7 +99,7 @@ const PhotoGallery: React.FC = () => {
         </div>
       )}
       
-      {/* Modal with selected photo and thumbnail navigation */}
+      {/* Modal with selected photo */}
       {selectedPhoto && (
         <>
           <PhotoModal 
@@ -108,12 +108,18 @@ const PhotoGallery: React.FC = () => {
             onClose={closeModal} 
             onNavigate={navigateGallery}
             onPhotoUpdated={loadPhotos}
+            showDetails={true}
+            hideDownload={true}
           />
-          <PhotoThumbnailNav 
-            photos={photos}
-            selectedPhoto={selectedPhoto}
-            onThumbnailClick={handlePhotoClick}
-          />
+          
+          {/* Thumbnail navigation - always visible */}
+          <div className="thumbnails-container">
+            <PhotoThumbnailNav 
+              photos={photos}
+              selectedPhoto={selectedPhoto}
+              onThumbnailClick={handlePhotoClick}
+            />
+          </div>
         </>
       )}
     </div>
