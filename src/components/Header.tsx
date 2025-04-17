@@ -13,9 +13,9 @@ const Header = () => {
   };
 
   return (
-    <div className="fixed top-0 w-full z-40">
+    <div className="fixed top-0 left-0 right-0 w-full z-40">
       <div className="w-full backdrop-blur-xl bg-black/50 border-b border-white/10 shadow-lg">
-        <div className="max-w-7xl mx-auto py-4 px-4 md:px-6 lg:px-8 flex items-center justify-between">
+        <div className="max-w-[2000px] mx-auto py-4 px-4 md:px-6 flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center">
             <div className="h-10 w-auto">

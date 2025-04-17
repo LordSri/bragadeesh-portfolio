@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Photo } from '@/utils/photoUtils';
 import { cn } from '@/lib/utils';
@@ -22,7 +21,8 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({ photos, onPhotoClick }) => {
   });
 
   return (
-    <div className="columns-1 sm:columns-2 md:columns-3 gap-6 space-y-6">
+    <div className="columns-1 sm:columns-2 md:columns-3 gap-6 space-y-6 pb-24">
+      {/* Added pb-24 to account for the thumbnail nav */}
       {sortedPhotos.map((photo) => (
         <div 
           key={photo.id}
