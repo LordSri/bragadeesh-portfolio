@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import Header from '@/components/Header';
 import TabNavigation from '@/components/TabNavigation';
@@ -6,6 +7,7 @@ import VideoGallery from '@/components/VideoGallery';
 import CinematographyTab from '@/components/CinematographyTab';
 import GraphicDesignTab from '@/components/GraphicDesignTab';
 import Footer from '@/components/Footer';
+
 const Index = () => {
   const [activeTab, setActiveTab] = useState('photos');
   const [scrollY, setScrollY] = useState(0);
@@ -13,6 +15,7 @@ const Index = () => {
   const [footerDocked, setFooterDocked] = useState(false);
   const workSectionRef = useRef<HTMLDivElement>(null);
   const footerRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     const handleScroll = () => {
       setScrollY(window.scrollY);
@@ -37,6 +40,7 @@ const Index = () => {
         }
       }
     };
+
     window.addEventListener('scroll', handleScroll, {
       passive: true
     });
@@ -44,6 +48,7 @@ const Index = () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+
   const renderTabContent = () => {
     switch (activeTab) {
       case 'photos':
@@ -58,6 +63,7 @@ const Index = () => {
         return <PhotoGallery />;
     }
   };
+
   return <div className="min-h-screen flex flex-col">
       {/* Background effects */}
       <div className="fixed inset-0 -z-10" style={{
@@ -84,8 +90,8 @@ const Index = () => {
       }} />
       </div>
 
-      {/* Header with docking effect */}
-      <div className={`${headerDocked ? 'header-docked' : 'header-float'} bg-black/80 backdrop-blur-md border-b border-red-500/10 z-40`}>
+      {/* Header with improved docking effect */}
+      <div className={`${headerDocked ? 'fixed top-0 left-0 w-full rounded-none' : 'fixed top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-7xl rounded-2xl'} bg-black/80 backdrop-blur-md border-b border-red-500/10 z-40 transition-all duration-300`}>
         <Header />
       </div>
       
@@ -100,7 +106,7 @@ const Index = () => {
             transform: `translateY(${scrollY * 0.08}px) translateZ(${scrollY * 0.05}px)`,
             opacity: Math.max(0, 1 - scrollY * 0.001)
           }}>
-              <h2 className="text-4xl lg:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-white to-gray-400 animate-fade-in leading-tight py-0 px-[93px] my-0 text-center md:text-6xl">
+              <h2 className="text-4xl lg:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-white to-gray-400 animate-fade-in leading-tight py-4 px-4 my-0 text-center md:text-6xl">
                 Capturing Moments, <br className="hidden md:block" /> Creating Memories
               </h2>
               <div className="absolute -inset-1 blur-xl bg-red-500/10 rounded-full -z-10"></div>
@@ -129,4 +135,5 @@ const Index = () => {
       </div>
     </div>;
 };
+
 export default Index;

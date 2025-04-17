@@ -46,8 +46,8 @@ const Footer: React.FC<FooterProps> = ({ footerDocked = false }) => {
         <div 
           id="contact" 
           className={`${
-            footerDocked ? 'footer-contact-docked' : 'footer-contact-float'
-          } glass-panel backdrop-blur-md border border-white/5 p-8`}
+            footerDocked ? 'fixed bottom-0 left-0 w-full rounded-none' : 'rounded-2xl mx-auto'
+          } glass-panel backdrop-blur-md border border-white/5 p-8 transition-all duration-300 max-w-7xl`}
         >
           <h2 className="text-2xl font-bold mb-6 text-white">Let's Connect</h2>
           

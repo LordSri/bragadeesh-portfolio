@@ -113,11 +113,11 @@ const PhotoGallery: React.FC = () => {
           />
           
           {/* Thumbnail navigation - always visible */}
-          <div className="thumbnails-container">
+          <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 flex items-center justify-center z-50 p-2 rounded-xl bg-black/80 backdrop-blur-md w-[80%] max-w-1000px overflow-x-auto scrollbar-hide">
             <PhotoThumbnailNav 
               photos={photos}
               selectedPhoto={selectedPhoto}
-              onThumbnailClick={handlePhotoClick}
+              onThumbnailClick={setSelectedPhoto}
             />
           </div>
         </>
