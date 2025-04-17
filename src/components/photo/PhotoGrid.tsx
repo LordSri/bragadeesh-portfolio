@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Photo } from '@/utils/photoUtils';
 import { cn } from '@/lib/utils';
@@ -23,41 +22,34 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({ photos, onPhotoClick }) => {
 
   return (
     <div className="columns-1 sm:columns-2 md:columns-3 gap-4 space-y-4">
-      {sortedPhotos.map((photo) => {
-        // Determine if photo is vertical or horizontal
-        const isVertical = photo.aspectRatio === "3/4" || photo.aspectRatio === "9/16";
-        const isWide = photo.aspectRatio === "16/9" || photo.aspectRatio === "3/2";
-        
-        return (
-          <div 
-            key={photo.id}
-            className={cn(
-              "mb-4 break-inside-avoid overflow-hidden rounded-xl shadow-lg group cursor-pointer transition-all duration-300 hover:shadow-2xl hover:scale-[1.01]",
-              isVertical && "h-auto"
-            )}
-            onClick={() => onPhotoClick(photo)}
-          >
-            <div className="relative w-full h-full">
-              <img 
-                src={photo.src} 
-                alt={photo.title} 
-                className="w-full object-cover bg-black"
-                style={{aspectRatio: photo.aspectRatio}}
-                loading="lazy"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
-                <h3 className="text-white text-lg font-medium">{photo.title}</h3>
-                {photo.award && (
-                  <div className="flex items-center mt-1">
-                    <Award size={16} className="text-blue-400 mr-1" />
-                    <span className="text-xs text-gray-300">{photo.award}</span>
-                  </div>
-                )}
-              </div>
+      {sortedPhotos.map((photo) => (
+        <div 
+          key={photo.id}
+          className={cn(
+            "mb-4 break-inside-avoid overflow-hidden rounded-xl shadow-lg group cursor-pointer transition-all duration-300 hover:shadow-2xl hover:scale-[1.01]",
+          )}
+          onClick={() => onPhotoClick(photo)}
+        >
+          <div className="relative w-full h-full">
+            <img 
+              src={photo.src} 
+              alt={photo.title} 
+              className="w-full h-full object-contain bg-black"
+              style={{aspectRatio: photo.aspectRatio}}
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+              <h3 className="text-white text-lg font-medium">{photo.title}</h3>
+              {photo.award && (
+                <div className="flex items-center mt-1">
+                  <Award size={16} className="text-blue-400 mr-1" />
+                  <span className="text-xs text-gray-300">{photo.award}</span>
+                </div>
+              )}
             </div>
           </div>
-        );
-      })}
+        </div>
+      ))}
     </div>
   );
 };
