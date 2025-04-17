@@ -82,7 +82,7 @@ const PhotoGallery: React.FC = () => {
       {/* Loading State */}
       {loading && (
         <div className="flex justify-center items-center py-20">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
         </div>
       )}
       
@@ -101,26 +101,15 @@ const PhotoGallery: React.FC = () => {
       
       {/* Modal with selected photo */}
       {selectedPhoto && (
-        <>
-          <PhotoModal 
-            photo={selectedPhoto} 
-            photos={photos}
-            onClose={closeModal} 
-            onNavigate={navigateGallery}
-            onPhotoUpdated={loadPhotos}
-            showDetails={true}
-            hideDownload={true}
-          />
-          
-          {/* Thumbnail navigation - always visible */}
-          <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 flex items-center justify-center z-50 p-2 rounded-xl bg-black/80 backdrop-blur-md w-[80%] max-w-1000px overflow-x-auto scrollbar-hide">
-            <PhotoThumbnailNav 
-              photos={photos}
-              selectedPhoto={selectedPhoto}
-              onThumbnailClick={setSelectedPhoto}
-            />
-          </div>
-        </>
+        <PhotoModal 
+          photo={selectedPhoto} 
+          photos={photos}
+          onClose={closeModal} 
+          onNavigate={navigateGallery}
+          onPhotoUpdated={loadPhotos}
+          showDetails={true}
+          hideDownload={true}
+        />
       )}
     </div>
   );

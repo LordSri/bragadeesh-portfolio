@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Photo, ExifData, updatePhotoMetadata, deletePhoto } from '@/utils/photoUtils';
 import { ChevronRight, ChevronLeft, X, Calendar, Clock, MapPin, Camera, Pencil, Save, Trash2, Download, Award } from 'lucide-react';
@@ -105,45 +106,25 @@ const PhotoModal: React.FC<PhotoModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/95 backdrop-blur-lg animate-fade-in">
-      <div className="absolute top-4 right-4 z-10 flex gap-2">
-        {!isEditing && (
-          <>
-            <button 
-              onClick={handleEditToggle} 
-              className="h-10 w-10 rounded-full bg-blue-500/20 backdrop-blur-md flex items-center justify-center text-white hover:bg-blue-500/40 transition-colors"
-            >
-              <Pencil size={18} />
-            </button>
-            {!hideDownload && (
-              <button 
-                onClick={handleDownload}
-                className="h-10 w-10 rounded-full bg-green-500/20 backdrop-blur-md flex items-center justify-center text-white hover:bg-green-500/40 transition-colors"
-              >
-                <Download size={18} />
-              </button>
-            )}
-            <button 
-              onClick={() => setIsDeleting(true)}
-              className="h-10 w-10 rounded-full bg-red-500/20 backdrop-blur-md flex items-center justify-center text-white hover:bg-red-500/40 transition-colors"
-            >
-              <Trash2 size={18} />
-            </button>
-          </>
-        )}
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-lg animate-fade-in">
+      {/* Close button */}
+      <div className="absolute top-4 right-4 z-10">
         <button 
-          onClick={isEditing ? handleEditToggle : onClose} 
-          className="h-10 w-10 rounded-full bg-slate-800/50 backdrop-blur-md flex items-center justify-center text-white hover:bg-slate-700/50 transition-colors"
+          onClick={onClose} 
+          className="h-10 w-10 rounded-full glass-morphism flex items-center justify-center text-white hover:bg-white/10 transition-colors"
+          aria-label="Close"
         >
           <X size={20} />
         </button>
       </div>
       
-      <div className="relative flex-1 w-full flex items-center justify-center p-4 overflow-hidden">
-        {/* Main Image */}
-        <div className="max-h-[70vh] max-w-full overflow-hidden flex items-center justify-center">
+      {/* Main content area with flex container */}
+      <div className="w-full h-full max-w-7xl mx-auto flex flex-col md:flex-row p-4 md:p-8 gap-4">
+        {/* Left side - Image */}
+        <div className="flex-1 relative flex items-center justify-center">
           {photo.beforeAfter ? (
             <div className="relative w-full h-full">
+              {/* Before/After slider implementation */}
               <div className="absolute inset-0 overflow-hidden">
                 <img 
                   src={photo.beforeAfter.before} 
@@ -188,40 +169,83 @@ const PhotoModal: React.FC<PhotoModalProps> = ({
             <img 
               src={photo.src} 
               alt={photo.title} 
-              className="max-w-full max-h-[70vh] object-contain"
+              className="max-w-full max-h-[80vh] object-contain"
             />
           )}
+          
+          {/* Navigation arrows */}
+          <button 
+            onClick={() => onNavigate('prev')} 
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 h-12 w-12 rounded-full glass-morphism flex items-center justify-center hover:bg-white/10 transition-colors"
+            aria-label="Previous photo"
+          >
+            <ChevronLeft size={28} />
+          </button>
+          <button 
+            onClick={() => onNavigate('next')} 
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 h-12 w-12 rounded-full glass-morphism flex items-center justify-center hover:bg-white/10 transition-colors"
+            aria-label="Next photo"
+          >
+            <ChevronRight size={28} />
+          </button>
         </div>
         
-        {/* Navigation arrows */}
-        <button 
-          onClick={() => onNavigate('prev')} 
-          className="absolute left-4 top-1/2 transform -translate-y-1/2 h-12 w-12 rounded-full bg-black/50 backdrop-blur-md flex items-center justify-center hover:bg-black/70 transition-colors"
-          aria-label="Previous photo"
-        >
-          <ChevronLeft size={28} />
-        </button>
-        <button 
-          onClick={() => onNavigate('next')} 
-          className="absolute right-4 top-1/2 transform -translate-y-1/2 h-12 w-12 rounded-full bg-black/50 backdrop-blur-md flex items-center justify-center hover:bg-black/70 transition-colors"
-          aria-label="Next photo"
-        >
-          <ChevronRight size={28} />
-        </button>
-      </div>
-      
-      {/* Photo Info - Only show if showDetails is true */}
-      {showDetails && (
-        <div className="mt-4 px-4 max-w-3xl w-full mx-auto">
-          {isEditing ? (
-            <div className="space-y-4 bg-gray-900/70 p-4 rounded-lg">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Right side - Details panel */}
+        {showDetails && (
+          <div className="md:w-80 lg:w-96 glass-morphism rounded-xl p-6 flex flex-col h-[80vh] overflow-y-auto">
+            <div className="flex justify-between items-start mb-4">
+              <h2 className="text-2xl font-bold">{photo.title}</h2>
+              <div className="flex gap-2">
+                {!isEditing && (
+                  <>
+                    <button 
+                      onClick={handleEditToggle} 
+                      className="h-8 w-8 rounded-full glass-morphism flex items-center justify-center text-white hover:bg-white/20 transition-colors"
+                      title="Edit"
+                    >
+                      <Pencil size={16} />
+                    </button>
+                    
+                    {!hideDownload && (
+                      <button 
+                        onClick={handleDownload}
+                        className="h-8 w-8 rounded-full glass-morphism flex items-center justify-center text-white hover:bg-white/20 transition-colors"
+                        title="Download"
+                      >
+                        <Download size={16} />
+                      </button>
+                    )}
+                    
+                    <button 
+                      onClick={() => setIsDeleting(true)}
+                      className="h-8 w-8 rounded-full glass-morphism flex items-center justify-center text-white hover:bg-red-500/30 transition-colors"
+                      title="Delete"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+            
+            {isEditing ? (
+              <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium mb-1">Title</label>
                   <Input 
                     value={editedPhoto.title || ''}
                     onChange={(e) => setEditedPhoto({...editedPhoto, title: e.target.value})}
-                    className="bg-gray-800 border-gray-700"
+                    className="bg-black/30 border-white/20"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-1">Description</label>
+                  <Textarea 
+                    value={editedPhoto.description || ''}
+                    onChange={(e) => setEditedPhoto({...editedPhoto, description: e.target.value})}
+                    className="bg-black/30 border-white/20"
+                    rows={3}
                   />
                 </div>
                 
@@ -230,120 +254,121 @@ const PhotoModal: React.FC<PhotoModalProps> = ({
                   <Input 
                     value={editedPhoto.award || ''}
                     onChange={(e) => setEditedPhoto({...editedPhoto, award: e.target.value})}
-                    className="bg-gray-800 border-gray-700"
+                    className="bg-black/30 border-white/20"
                     placeholder="e.g. Nature Photography Award 2023"
                   />
                 </div>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-1">Description</label>
-                <Textarea 
-                  value={editedPhoto.description || ''}
-                  onChange={(e) => setEditedPhoto({...editedPhoto, description: e.target.value})}
-                  className="bg-gray-800 border-gray-700"
-                  rows={2}
-                />
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium mb-1">Camera</label>
-                  <Input 
-                    value={editedExif.camera || ''}
-                    onChange={(e) => setEditedExif({...editedExif, camera: e.target.value})}
-                    className="bg-gray-800 border-gray-700"
-                    placeholder="e.g. Canon EOS 5D Mark IV"
-                  />
+                
+                <div className="space-y-4 pt-4 border-t border-white/10">
+                  <h3 className="text-lg font-medium">Photo Details</h3>
+                  
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Camera</label>
+                    <Input 
+                      value={editedExif.camera || ''}
+                      onChange={(e) => setEditedExif({...editedExif, camera: e.target.value})}
+                      className="bg-black/30 border-white/20"
+                      placeholder="e.g. Canon EOS 5D Mark IV"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Date</label>
+                    <Input 
+                      value={editedExif.date || ''}
+                      onChange={(e) => setEditedExif({...editedExif, date: e.target.value})}
+                      className="bg-black/30 border-white/20"
+                      placeholder="e.g. January 15, 2023"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Location</label>
+                    <Input 
+                      value={editedExif.location || ''}
+                      onChange={(e) => setEditedExif({...editedExif, location: e.target.value})}
+                      className="bg-black/30 border-white/20"
+                      placeholder="e.g. Tromsø, Norway"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Exposure</label>
+                    <Input 
+                      value={editedExif.exposure || ''}
+                      onChange={(e) => setEditedExif({...editedExif, exposure: e.target.value})}
+                      className="bg-black/30 border-white/20" 
+                      placeholder="e.g. 30s, f/2.8, ISO 1600"
+                    />
+                  </div>
                 </div>
                 
-                <div>
-                  <label className="block text-sm font-medium mb-1">Date</label>
-                  <Input 
-                    value={editedExif.date || ''}
-                    onChange={(e) => setEditedExif({...editedExif, date: e.target.value})}
-                    className="bg-gray-800 border-gray-700"
-                    placeholder="e.g. January 15, 2023"
-                  />
+                <div className="flex justify-end space-x-2 pt-4">
+                  <Button variant="outline" onClick={handleEditToggle} className="border-white/20">
+                    Cancel
+                  </Button>
+                  <Button onClick={handleSaveChanges} className="bg-blue-600 hover:bg-blue-700">
+                    <Save size={16} className="mr-2" />
+                    Save Changes
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <>
+                {/* Description */}
+                <div className="mb-6">
+                  <p className="text-gray-300">{photo.description}</p>
                 </div>
                 
-                <div>
-                  <label className="block text-sm font-medium mb-1">Location</label>
-                  <Input 
-                    value={editedExif.location || ''}
-                    onChange={(e) => setEditedExif({...editedExif, location: e.target.value})}
-                    className="bg-gray-800 border-gray-700"
-                    placeholder="e.g. Tromsø, Norway"
-                  />
-                </div>
+                {/* Award badge if present */}
+                {photo.award && (
+                  <div className="flex items-center p-3 glass-morphism rounded-lg bg-blue-900/30 mb-6">
+                    <Award size={18} className="text-blue-400 mr-2 flex-shrink-0" />
+                    <span>{photo.award}</span>
+                  </div>
+                )}
                 
-                <div>
-                  <label className="block text-sm font-medium mb-1">Exposure</label>
-                  <Input 
-                    value={editedExif.exposure || ''}
-                    onChange={(e) => setEditedExif({...editedExif, exposure: e.target.value})}
-                    className="bg-gray-800 border-gray-700" 
-                    placeholder="e.g. 30s, f/2.8, ISO 1600"
-                  />
-                </div>
-              </div>
-              
-              <div className="flex justify-end space-x-2 pt-2">
-                <Button variant="outline" onClick={handleEditToggle}>
-                  Cancel
-                </Button>
-                <Button onClick={handleSaveChanges} className="bg-blue-600 hover:bg-blue-700">
-                  <Save size={16} className="mr-2" />
-                  Save Changes
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <div className="flex justify-between items-start">
-              <div>
-                <h2 className="text-xl font-bold mb-1">{photo.title}</h2>
-                <p className="text-gray-300 text-sm">{photo.description}</p>
-              </div>
-              
-              {photo.award && (
-                <div className="flex items-center p-2 glass-panel rounded-lg bg-blue-950/30">
-                  <Award size={16} className="text-blue-400 mr-2 flex-shrink-0" />
-                  <span className="text-xs">{photo.award}</span>
-                </div>
-              )}
-            </div>
-          )}
-          
-          {!isEditing && photo.exif && (
-            <div className="mt-3 flex flex-wrap gap-4 text-xs text-gray-400">
-              {photo.exif.camera && (
-                <div className="flex items-center">
-                  <Camera size={14} className="text-blue-400 mr-1 flex-shrink-0" />
-                  <span>{photo.exif.camera}</span>
-                </div>
-              )}
-              {photo.exif.date && (
-                <div className="flex items-center">
-                  <Calendar size={14} className="text-blue-400 mr-1 flex-shrink-0" />
-                  <span>{photo.exif.date}</span>
-                </div>
-              )}
-              {photo.exif.location && (
-                <div className="flex items-center">
-                  <MapPin size={14} className="text-blue-400 mr-1 flex-shrink-0" />
-                  <span>{photo.exif.location}</span>
-                </div>
-              )}
-              {photo.exif.exposure && (
-                <div className="flex items-center">
-                  <Clock size={14} className="text-blue-400 mr-1 flex-shrink-0" />
-                  <span>{photo.exif.exposure}</span>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      )}
+                {/* EXIF data with improved styling */}
+                {photo.exif && Object.values(photo.exif).some(val => val) && (
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-medium">Photo Details</h3>
+                    
+                    <div className="space-y-3">
+                      {photo.exif.camera && (
+                        <div className="flex items-center glass-morphism p-2 px-4 rounded-lg">
+                          <Camera size={16} className="text-blue-400 mr-3 flex-shrink-0" />
+                          <span>{photo.exif.camera}</span>
+                        </div>
+                      )}
+                      
+                      {photo.exif.date && (
+                        <div className="flex items-center glass-morphism p-2 px-4 rounded-lg">
+                          <Calendar size={16} className="text-blue-400 mr-3 flex-shrink-0" />
+                          <span>{photo.exif.date}</span>
+                        </div>
+                      )}
+                      
+                      {photo.exif.location && (
+                        <div className="flex items-center glass-morphism p-2 px-4 rounded-lg">
+                          <MapPin size={16} className="text-blue-400 mr-3 flex-shrink-0" />
+                          <span>{photo.exif.location}</span>
+                        </div>
+                      )}
+                      
+                      {photo.exif.exposure && (
+                        <div className="flex items-center glass-morphism p-2 px-4 rounded-lg">
+                          <Clock size={16} className="text-blue-400 mr-3 flex-shrink-0" />
+                          <span>{photo.exif.exposure}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        )}
+      </div>
       
       {/* Delete Confirmation Dialog */}
       <Dialog open={isDeleting} onOpenChange={setIsDeleting}>

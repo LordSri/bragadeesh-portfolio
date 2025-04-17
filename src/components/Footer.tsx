@@ -1,23 +1,16 @@
+
 import React from 'react';
 import { Instagram, Award, MessageSquare, Mail } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
-import { cn } from '@/lib/utils';
 
-interface FooterProps {
-  footerDocked?: boolean;
-}
-
-const Footer: React.FC<FooterProps> = ({ footerDocked = false }) => {
+const Footer = () => {
   const currentYear = new Date().getFullYear();
   
   return (
-    <footer className={cn(
-      "w-full transition-all duration-300",
-      footerDocked ? "fixed bottom-0 left-0 z-30" : "relative mt-32"
-    )}>
+    <footer className="w-full bg-black/80 backdrop-blur-xl border-t border-white/10 mt-24">
       {/* About section */}
-      <div className="max-w-7xl mx-auto px-4 pb-8">
-        <div id="about" className="glass-panel rounded-xl p-8 backdrop-blur-xl bg-white/10 border border-white/10 mb-8">
+      <div className="max-w-7xl mx-auto px-4 py-12">
+        <div id="about" className="glass-morphism rounded-xl p-8 mb-12">
           <h2 className="text-2xl font-bold mb-6 text-white">About Me</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
@@ -34,11 +27,11 @@ const Footer: React.FC<FooterProps> = ({ footerDocked = false }) => {
             <div className="flex flex-col space-y-4">
               <h3 className="text-xl font-semibold text-white">Experience</h3>
               <div className="space-y-2">
-                <div className="glass-panel p-3 rounded-lg backdrop-blur-xl bg-white/5">
+                <div className="glass-morphism p-3 rounded-lg">
                   <h4 className="font-medium">Senior Photographer</h4>
                   <p className="text-sm text-gray-400">Creative Studio • 2020-Present</p>
                 </div>
-                <div className="glass-panel p-3 rounded-lg backdrop-blur-xl bg-white/5">
+                <div className="glass-morphism p-3 rounded-lg">
                   <h4 className="font-medium">Videographer</h4>
                   <p className="text-sm text-gray-400">Media Productions • 2018-2020</p>
                 </div>
@@ -49,10 +42,7 @@ const Footer: React.FC<FooterProps> = ({ footerDocked = false }) => {
       </div>
       
       {/* Contact section */}
-      <div className={cn(
-        "w-full bg-black/80 backdrop-blur-xl border-t border-white/10",
-        footerDocked ? "" : "rounded-t-2xl mx-auto max-w-7xl"
-      )}>
+      <div className="bg-black/90 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto p-8">
           <div id="contact" className="max-w-7xl mx-auto">
             <h2 className="text-2xl font-bold mb-6 text-white">Let's Connect</h2>
@@ -73,13 +63,13 @@ const Footer: React.FC<FooterProps> = ({ footerDocked = false }) => {
                 <h3 className="text-xl font-semibold mb-4 text-white">Get in Touch</h3>
                 <div className="space-y-4">
                   <a href="mailto:jane.doe@example.com" className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors group">
-                    <div className="h-10 w-10 rounded-full glass-panel flex items-center justify-center group-hover:bg-red-500/20 transition-colors backdrop-blur-xl bg-white/5">
+                    <div className="h-10 w-10 rounded-full glass-morphism flex items-center justify-center group-hover:bg-white/20 transition-colors">
                       <Mail size={18} />
                     </div>
                     <span>Send me an email</span>
                   </a>
                   <a href="https://wa.me/1234567890" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors group">
-                    <div className="h-10 w-10 rounded-full glass-panel flex items-center justify-center group-hover:bg-red-500/20 transition-colors backdrop-blur-xl bg-white/5">
+                    <div className="h-10 w-10 rounded-full glass-morphism flex items-center justify-center group-hover:bg-white/20 transition-colors">
                       <MessageSquare size={18} />
                     </div>
                     <span>Message on WhatsApp</span>
@@ -91,18 +81,18 @@ const Footer: React.FC<FooterProps> = ({ footerDocked = false }) => {
                 <h3 className="text-xl font-semibold mb-4 text-white">Follow Me</h3>
                 <div className="flex gap-3 flex-wrap">
                   <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" 
-                    className="h-12 w-12 rounded-full glass-panel flex items-center justify-center 
-                    hover:bg-red-500/20 transition-all hover:scale-110 backdrop-blur-xl bg-white/5">
+                    className="h-12 w-12 rounded-full glass-morphism flex items-center justify-center 
+                    hover:bg-white/20 transition-all hover:scale-110">
                     <Instagram size={20} />
                   </a>
                   <a href="#" target="_blank" rel="noopener noreferrer" 
-                    className="h-12 w-12 rounded-full glass-panel flex items-center justify-center 
-                    hover:bg-red-500/20 transition-all hover:scale-110 backdrop-blur-xl bg-white/5">
+                    className="h-12 w-12 rounded-full glass-morphism flex items-center justify-center 
+                    hover:bg-white/20 transition-all hover:scale-110">
                     <Award size={20} />
                   </a>
                   <a href="https://wa.me/1234567890" target="_blank" rel="noopener noreferrer" 
-                    className="h-12 w-12 rounded-full glass-panel flex items-center justify-center 
-                    hover:bg-red-500/20 transition-all hover:scale-110 backdrop-blur-xl bg-white/5">
+                    className="h-12 w-12 rounded-full glass-morphism flex items-center justify-center 
+                    hover:bg-white/20 transition-all hover:scale-110">
                     <MessageSquare size={20} />
                   </a>
                 </div>
