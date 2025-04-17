@@ -20,24 +20,16 @@ const Index = () => {
     const handleScroll = () => {
       setScrollY(window.scrollY);
 
-      // Header docking logic
-      if (window.scrollY > 50) {
-        setHeaderDocked(false);
-      } else {
-        setHeaderDocked(true);
-      }
+      // Header docking logic - simplified for linearity
+      setHeaderDocked(window.scrollY <= 50);
 
       // Footer docking logic
       if (footerRef.current) {
         const footerPosition = footerRef.current.getBoundingClientRect();
         const windowHeight = window.innerHeight;
-
+        
         // Check if footer is at the bottom of viewport
-        if (footerPosition.bottom <= windowHeight + 50) {
-          setFooterDocked(true);
-        } else {
-          setFooterDocked(false);
-        }
+        setFooterDocked(footerPosition.bottom <= windowHeight + 50);
       }
     };
 
@@ -90,9 +82,11 @@ const Index = () => {
       }} />
       </div>
 
-      {/* Header with improved docking effect */}
-      <div className={`${headerDocked ? 'fixed top-0 left-0 w-full rounded-none' : 'fixed top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-7xl rounded-2xl'} bg-black/80 backdrop-blur-md border-b border-red-500/10 z-40 transition-all duration-300`}>
-        <Header />
+      {/* Header with simplified docking effect - only vertical movement, no horizontal repositioning */}
+      <div className={`fixed ${headerDocked ? 'top-0' : 'top-4'} transition-all duration-300 ease-linear z-40 w-full px-4`}>
+        <div className={`mx-auto max-w-7xl ${headerDocked ? 'rounded-none' : 'rounded-2xl'} bg-black/60 backdrop-blur-lg border-b border-red-500/20 shadow-lg`}>
+          <Header />
+        </div>
       </div>
       
       {/* Main content with increased padding for floating header */}
@@ -130,7 +124,7 @@ const Index = () => {
         </main>
       </div>
       
-      <div ref={footerRef}>
+      <div ref={footerRef} className="relative mt-16">
         <Footer footerDocked={footerDocked} />
       </div>
     </div>;

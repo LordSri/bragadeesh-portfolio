@@ -10,7 +10,7 @@ interface PhotoGridProps {
 }
 
 const PhotoGrid: React.FC<PhotoGridProps> = ({ photos, onPhotoClick }) => {
-  // Sort photos by aspect ratio to better organize them
+  // Sort photos by aspect ratio for better organization in the masonry layout
   const sortedPhotos = [...photos].sort((a, b) => {
     // Sort vertically oriented photos first
     const aIsVertical = a.aspectRatio === "3/4" || a.aspectRatio === "9/16";
@@ -22,7 +22,7 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({ photos, onPhotoClick }) => {
   });
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="columns-1 sm:columns-2 md:columns-3 gap-4 space-y-4">
       {sortedPhotos.map((photo) => {
         // Determine if photo is vertical or horizontal
         const isVertical = photo.aspectRatio === "3/4" || photo.aspectRatio === "9/16";
@@ -32,17 +32,17 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({ photos, onPhotoClick }) => {
           <div 
             key={photo.id}
             className={cn(
-              "mb-4 overflow-hidden rounded-xl shadow-lg group cursor-pointer transition-all duration-300 hover:shadow-2xl hover:scale-[1.01]",
-              isVertical && "sm:row-span-2",
-              isWide && "sm:col-span-1 lg:col-span-2"
+              "mb-4 break-inside-avoid overflow-hidden rounded-xl shadow-lg group cursor-pointer transition-all duration-300 hover:shadow-2xl hover:scale-[1.01]",
+              isVertical && "h-auto"
             )}
             onClick={() => onPhotoClick(photo)}
           >
-            <div className="relative h-full">
+            <div className="relative w-full h-full">
               <img 
                 src={photo.src} 
                 alt={photo.title} 
-                className="w-full h-full object-cover bg-black"
+                className="w-full object-cover bg-black"
+                style={{aspectRatio: photo.aspectRatio}}
                 loading="lazy"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">

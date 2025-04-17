@@ -18,17 +18,17 @@ const TabNavigation: React.FC<TabProps> = ({ activeTab, setActiveTab }) => {
 
   return (
     <div className="w-full mb-8">
-      <div className="w-full glass-panel rounded-2xl p-2 inline-flex backdrop-blur-lg border border-red-500/20 shadow-lg">
+      <div className="w-full glass-panel rounded-2xl p-2 inline-flex backdrop-blur-xl bg-white/10 border border-red-500/20 shadow-lg">
         <nav className="flex space-x-2 w-full">
           {tabs.map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={cn(
-                "flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-medium transition-all duration-300",
+                "flex-1 flex items-center justify-center gap-2 px-6 py-4 rounded-xl text-sm font-medium transition-all duration-300",
                 activeTab === tab.id 
                   ? "bg-red-500/20 text-white shadow-md border-b-2 border-red-500" 
-                  : "text-gray-400 hover:text-white hover:bg-white/5"
+                  : "text-gray-300 hover:text-white hover:bg-white/10"
               )}
             >
               <span className={cn(

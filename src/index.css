@@ -57,7 +57,7 @@
 
 @layer utilities {
   .glass-panel {
-    @apply backdrop-blur-md bg-white/5 border border-white/10 shadow-lg;
+    @apply backdrop-blur-xl bg-white/10 border border-white/10 shadow-lg;
   }
   
   .text-glow {
@@ -86,11 +86,12 @@
     100% { background-position: 0% 0%; }
   }
   
-  /* Photo details position */
+  /* Photo details position - repositioned to avoid overlap */
   .photo-details {
     @apply fixed bottom-24 left-1/2 transform -translate-x-1/2 p-4 rounded-xl bg-black/80 backdrop-blur-md;
     width: 80%;
     max-width: 600px;
+    z-index: 40;
   }
 }
 
@@ -139,6 +140,11 @@
 
 /* Red theme elements */
 .red-glow {
-  box-shadow: 0 0 15px rgba(252, 58, 87, 0.2), 
-              0 0 30px rgba(252, 58, 87, 0.1);
+  box-shadow: 0 0 15px rgba(252, 58, 87, 0.3), 
+              0 0 30px rgba(252, 58, 87, 0.2);
+}
+
+/* Enhanced glass morphism for better visibility */
+.glass-morphism {
+  @apply backdrop-blur-xl bg-white/15 border border-white/20 shadow-lg;
 }

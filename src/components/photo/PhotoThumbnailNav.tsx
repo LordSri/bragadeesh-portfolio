@@ -41,9 +41,9 @@ const PhotoThumbnailNav: React.FC<PhotoThumbnailNavProps> = ({
   return (
     <div 
       ref={thumbnailsRef}
-      className="w-full mt-4 pb-4 px-4 overflow-x-auto scrollbar-hide"
+      className="w-full pb-4 px-4 overflow-x-auto scrollbar-hide"
     >
-      <div className="flex space-x-2 min-w-max px-4">
+      <div className="flex space-x-3 min-w-max px-4">
         {photos.map((photo) => (
           <button
             ref={selectedPhoto?.id === photo.id ? selectedThumbnailRef : undefined}
@@ -51,12 +51,12 @@ const PhotoThumbnailNav: React.FC<PhotoThumbnailNavProps> = ({
             id={`thumbnail-${photo.id}`}
             onClick={() => onThumbnailClick(photo)}
             className={cn(
-              "relative transition-all duration-200 flex-shrink-0 rounded-md overflow-hidden border-2",
+              "relative transition-all duration-200 flex-shrink-0 rounded-lg overflow-hidden border-2",
               selectedPhoto?.id === photo.id 
-                ? "border-blue-500 opacity-100 transform scale-105" 
+                ? "border-red-500 opacity-100 transform scale-110" 
                 : "border-transparent opacity-70 grayscale hover:opacity-90 hover:grayscale-0"
             )}
-            style={{ width: '80px', height: '60px' }}
+            style={{ width: '100px', height: '75px' }}
           >
             <img 
               src={photo.src} 
