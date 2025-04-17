@@ -1,13 +1,9 @@
-
 import React from 'react';
 import { Instagram, Award, MessageSquare, Mail } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
-
 const Footer = () => {
   const currentYear = new Date().getFullYear();
-  
-  return (
-    <footer className="w-full bg-black/80 backdrop-blur-xl border-t border-white/10 mt-24">
+  return <footer className="w-full bg-black/80 backdrop-blur-xl border-t border-white/10 mt-24">
       {/* About section */}
       <div className="max-w-7xl mx-auto px-4 py-12">
         <div id="about" className="glass-morphism rounded-xl p-8 mb-12">
@@ -31,7 +27,7 @@ const Footer = () => {
                   <h4 className="font-medium">Senior Photographer</h4>
                   <p className="text-sm text-gray-400">Creative Studio • 2020-Present</p>
                 </div>
-                <div className="glass-morphism p-3 rounded-lg">
+                <div className="glass-morphism p-3 rounded-lg px-[13px] my-[17px] py-[12px]">
                   <h4 className="font-medium">Videographer</h4>
                   <p className="text-sm text-gray-400">Media Productions • 2018-2020</p>
                 </div>
@@ -80,18 +76,15 @@ const Footer = () => {
               <div>
                 <h3 className="text-xl font-semibold mb-4 text-white">Follow Me</h3>
                 <div className="flex gap-3 flex-wrap">
-                  <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" 
-                    className="h-12 w-12 rounded-full glass-morphism flex items-center justify-center 
+                  <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="h-12 w-12 rounded-full glass-morphism flex items-center justify-center 
                     hover:bg-white/20 transition-all hover:scale-110">
                     <Instagram size={20} />
                   </a>
-                  <a href="#" target="_blank" rel="noopener noreferrer" 
-                    className="h-12 w-12 rounded-full glass-morphism flex items-center justify-center 
+                  <a href="#" target="_blank" rel="noopener noreferrer" className="h-12 w-12 rounded-full glass-morphism flex items-center justify-center 
                     hover:bg-white/20 transition-all hover:scale-110">
                     <Award size={20} />
                   </a>
-                  <a href="https://wa.me/1234567890" target="_blank" rel="noopener noreferrer" 
-                    className="h-12 w-12 rounded-full glass-morphism flex items-center justify-center 
+                  <a href="https://wa.me/1234567890" target="_blank" rel="noopener noreferrer" className="h-12 w-12 rounded-full glass-morphism flex items-center justify-center 
                     hover:bg-white/20 transition-all hover:scale-110">
                     <MessageSquare size={20} />
                   </a>
@@ -115,8 +108,6 @@ const Footer = () => {
           </div>
         </div>
       </div>
-    </footer>
-  );
+    </footer>;
 };
-
 export default Footer;
