@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Photo } from '@/utils/photoUtils';
 import { cn } from '@/lib/utils';
@@ -39,6 +40,8 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({ photos, onPhotoClick }) => {
               style={{aspectRatio: photo.aspectRatio}}
               loading="lazy"
             />
+            {/* Vignette overlay for cleaner edges */}
+            <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_10px_rgba(0,0,0,0.5)]"></div>
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
               <h3 className="text-white text-lg font-medium">{photo.title}</h3>
               {photo.award && (

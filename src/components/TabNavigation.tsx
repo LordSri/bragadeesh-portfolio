@@ -17,30 +17,32 @@ const TabNavigation: React.FC<TabProps> = ({ activeTab, setActiveTab }) => {
   ];
 
   return (
-    <div className="w-full mb-8">
+    <div className="w-full sticky top-[72px] z-30 px-4 py-2 bg-black/60 backdrop-blur-md">
       <div className="w-full glass-panel rounded-2xl p-2 inline-flex backdrop-blur-xl bg-white/10 border border-red-500/20 shadow-lg">
-        <nav className="flex space-x-2 w-full">
-          {tabs.map(tab => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={cn(
-                "flex-1 flex items-center justify-center gap-2 px-6 py-4 rounded-xl text-sm font-medium transition-all duration-300",
-                activeTab === tab.id 
-                  ? "bg-red-500/20 text-white shadow-md border-b-2 border-red-500" 
-                  : "text-gray-300 hover:text-white hover:bg-white/10"
-              )}
-            >
-              <span className={cn(
-                "transition-transform duration-300",
-                activeTab === tab.id ? "scale-110" : ""
-              )}>
-                {tab.icon}
-              </span>
-              <span>{tab.label}</span>
-            </button>
-          ))}
-        </nav>
+        <div className="w-full overflow-x-auto scrollbar-hide">
+          <nav className="flex space-x-2 min-w-max">
+            {tabs.map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={cn(
+                  "flex items-center justify-center gap-2 px-6 py-4 rounded-xl text-sm font-medium transition-all duration-300",
+                  activeTab === tab.id 
+                    ? "bg-red-500/20 text-white shadow-md border-b-2 border-red-500" 
+                    : "text-gray-300 hover:text-white hover:bg-white/10"
+                )}
+              >
+                <span className={cn(
+                  "transition-transform duration-300",
+                  activeTab === tab.id ? "scale-110" : ""
+                )}>
+                  {tab.icon}
+                </span>
+                <span>{tab.label}</span>
+              </button>
+            ))}
+          </nav>
+        </div>
       </div>
     </div>
   );

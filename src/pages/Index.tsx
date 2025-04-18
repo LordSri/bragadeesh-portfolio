@@ -56,28 +56,28 @@ const Index = () => {
       <Header />
       
       {/* Main content with increased padding for header */}
-      <div className="pt-28 w-full">
+      <div className="pt-20 md:pt-28 w-full">
         {/* Hero Section */}
-        <section className="py-16 px-4 max-w-7xl mx-auto relative">
-          <div className="text-center mb-16">
-            <div className="mb-10 relative inline-block">
-              <h2 className="text-4xl lg:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-white to-gray-400 animate-fade-in leading-tight py-4 px-4 my-0 text-center md:text-6xl">
+        <section className="py-8 md:py-16 px-4 max-w-[2000px] mx-auto relative">
+          <div className="text-center mb-12 md:mb-16">
+            <div className="mb-6 md:mb-10 relative inline-block">
+              <h2 className="text-3xl md:text-4xl lg:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-white to-gray-400 animate-fade-in leading-tight py-4 px-4 my-0 text-center">
                 Capturing Moments, <br className="hidden md:block" /> Creating Memories
               </h2>
               <div className="absolute -inset-1 blur-xl bg-red-500/10 rounded-full -z-10"></div>
             </div>
-            <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto animate-fade-in mt-6">
+            <p className="text-base md:text-lg lg:text-xl text-gray-300 max-w-3xl mx-auto animate-fade-in mt-4 md:mt-6">
               Specializing in photography, videography, cinematography, and graphic design to bring your vision to life.
             </p>
           </div>
         </section>
         
-        <main id="work" ref={workSectionRef} className="flex-grow max-w-7xl w-full mx-auto px-4 py-8 relative">
-          <div className="w-full overflow-x-auto scrollbar-hide">
-            <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
-          </div>
+        <main id="work" ref={workSectionRef} className="flex-grow max-w-[2000px] w-full mx-auto relative">
+          {/* Tab Navigation - Now sticky */}
+          <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
           
-          <div className="mt-8 mb-16">
+          {/* Content with padding */}
+          <div className="px-4 py-6">
             {renderTabContent()}
           </div>
         </main>

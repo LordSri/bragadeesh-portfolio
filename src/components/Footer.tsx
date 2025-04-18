@@ -1,12 +1,16 @@
+
 import React from 'react';
 import { Instagram, Award, MessageSquare, Mail } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
+
 const Footer = () => {
   const currentYear = new Date().getFullYear();
-  return <footer className="w-full bg-black/80 backdrop-blur-xl border-t border-white/10 mt-24">
+  
+  return (
+    <footer className="w-full bg-black/80 backdrop-blur-xl border-t border-white/10 mt-24">
       {/* About section */}
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        <div id="about" className="glass-morphism rounded-xl p-8 mb-12">
+      <div className="max-w-[2000px] mx-auto px-4 py-12">
+        <div id="about" className="glass-morphism rounded-xl p-6 md:p-8 mb-12">
           <h2 className="text-2xl font-bold mb-6 text-white">About Me</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
@@ -22,12 +26,12 @@ const Footer = () => {
             </div>
             <div className="flex flex-col space-y-4">
               <h3 className="text-xl font-semibold text-white">Experience</h3>
-              <div className="space-y-2">
+              <div className="space-y-4">
                 <div className="glass-morphism p-3 rounded-lg">
                   <h4 className="font-medium">Senior Photographer</h4>
                   <p className="text-sm text-gray-400">Creative Studio • 2020-Present</p>
                 </div>
-                <div className="glass-morphism p-3 rounded-lg px-[13px] my-[17px] py-[12px]">
+                <div className="glass-morphism p-3 rounded-lg">
                   <h4 className="font-medium">Videographer</h4>
                   <p className="text-sm text-gray-400">Media Productions • 2018-2020</p>
                 </div>
@@ -39,8 +43,8 @@ const Footer = () => {
       
       {/* Contact section */}
       <div className="bg-black/90 backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto p-8">
-          <div id="contact" className="max-w-7xl mx-auto">
+        <div className="max-w-[2000px] mx-auto p-4 md:p-8">
+          <div id="contact" className="max-w-[2000px] mx-auto">
             <h2 className="text-2xl font-bold mb-6 text-white">Let's Connect</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -108,6 +112,8 @@ const Footer = () => {
           </div>
         </div>
       </div>
-    </footer>;
+    </footer>
+  );
 };
+
 export default Footer;
