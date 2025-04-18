@@ -106,9 +106,9 @@ const PhotoModal: React.FC<PhotoModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 animate-fade-in">
-      {/* Blurred background based on current photo */}
+      {/* Dynamic blurred background based on current photo */}
       <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20 backdrop-blur-2xl"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20 backdrop-blur-2xl transition-all duration-300"
         style={{ backgroundImage: `url(${photo.src})` }}
       />
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
@@ -124,10 +124,10 @@ const PhotoModal: React.FC<PhotoModalProps> = ({
         </button>
       </div>
       
-      {/* Main content area */}
-      <div className="relative h-full flex items-start md:items-center justify-center p-4 md:p-8">
-        <div className="w-full h-full max-w-7xl mx-auto flex flex-col md:flex-row gap-4 md:gap-8">
-          {/* Left side - Image */}
+      {/* Main content area with improved alignment */}
+      <div className="relative h-[calc(100vh-10rem)] flex items-center justify-center p-4 mt-4">
+        <div className="w-full h-full max-w-[2000px] mx-auto flex flex-col md:flex-row gap-4 md:gap-8">
+          {/* Left side - Image with proper vertical centering */}
           <div className="flex-1 relative flex items-center justify-center">
             {photo.beforeAfter ? (
               <div className="relative w-full h-full">
@@ -176,11 +176,11 @@ const PhotoModal: React.FC<PhotoModalProps> = ({
             <img 
               src={photo.src} 
               alt={photo.title} 
-              className="max-w-full max-h-[calc(100vh-12rem)] object-contain"
+              className="max-w-full max-h-full object-contain"
             />
           )}
             
-            {/* Navigation arrows */}
+            {/* Navigation arrows with improved positioning */}
             <button 
               onClick={() => onNavigate('prev')} 
               className="absolute left-4 top-1/2 transform -translate-y-1/2 h-12 w-12 rounded-full glass-morphism flex items-center justify-center hover:bg-white/10 transition-colors"
@@ -197,10 +197,10 @@ const PhotoModal: React.FC<PhotoModalProps> = ({
             </button>
           </div>
           
-          {/* Right side - Details panel */}
+          {/* Right side - Details panel with proper spacing */}
           {showDetails && (
-            <div className="md:w-80 lg:w-96 glass-morphism rounded-xl flex flex-col max-h-[calc(100vh-12rem)]">
-              <div className="flex justify-between items-start mb-4 p-6">
+            <div className="md:w-80 lg:w-96 glass-morphism rounded-xl flex flex-col h-full">
+              <div className="flex justify-between items-start p-6 pb-4">
                 <h2 className="text-2xl font-bold">{photo.title}</h2>
                 <div className="flex gap-2">
                   {!isEditing && (
@@ -235,7 +235,7 @@ const PhotoModal: React.FC<PhotoModalProps> = ({
                 </div>
               </div>
               
-              <div className="p-6 overflow-y-auto">
+              <div className="flex-1 overflow-y-auto p-6 pt-2">
                 {isEditing ? (
                   <div className="space-y-4">
                     <div>
