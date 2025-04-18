@@ -101,15 +101,23 @@ const PhotoGallery: React.FC = () => {
       
       {/* Modal with selected photo */}
       {selectedPhoto && (
-        <PhotoModal 
-          photo={selectedPhoto} 
-          photos={photos}
-          onClose={closeModal} 
-          onNavigate={navigateGallery}
-          onPhotoUpdated={loadPhotos}
-          showDetails={true}
-          hideDownload={true}
-        />
+        <>
+          <PhotoModal 
+            photo={selectedPhoto} 
+            photos={photos}
+            onClose={closeModal} 
+            onNavigate={navigateGallery}
+            onPhotoUpdated={loadPhotos}
+            showDetails={true}
+            hideDownload={true}
+          />
+          {/* Photo thumbnail navigation */}
+          <PhotoThumbnailNav
+            photos={photos}
+            selectedPhoto={selectedPhoto}
+            onThumbnailClick={(photo) => setSelectedPhoto(photo)}
+          />
+        </>
       )}
     </div>
   );

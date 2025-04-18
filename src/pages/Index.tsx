@@ -58,7 +58,7 @@ const Index = () => {
       {/* Main content with increased padding for header */}
       <div className="pt-20 md:pt-28 w-full">
         {/* Hero Section */}
-        <section className="py-8 md:py-16 px-4 max-w-[2000px] mx-auto relative">
+        <section className="py-8 md:py-16 px-4 w-full mx-auto relative">
           <div className="text-center mb-12 md:mb-16">
             <div className="mb-6 md:mb-10 relative inline-block">
               <h2 className="text-3xl md:text-4xl lg:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-white to-gray-400 animate-fade-in leading-tight py-4 px-4 my-0 text-center">
@@ -72,12 +72,12 @@ const Index = () => {
           </div>
         </section>
         
-        <main id="work" ref={workSectionRef} className="flex-grow max-w-[2000px] w-full mx-auto relative">
+        <main id="work" ref={workSectionRef} className="flex-grow w-full mx-auto relative">
           {/* Tab Navigation - Now sticky */}
           <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
           
           {/* Content with padding */}
-          <div className="px-4 py-6">
+          <div className="px-4 py-6 max-w-[2000px] mx-auto">
             {renderTabContent()}
           </div>
         </main>
