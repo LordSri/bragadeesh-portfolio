@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Photo } from '@/utils/photoUtils';
 import { cn } from '@/lib/utils';
 
@@ -14,29 +14,43 @@ const PhotoThumbnailNav: React.FC<PhotoThumbnailNavProps> = ({
   selectedPhoto,
   onThumbnailClick
 }) => {
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // Handle horizontal scroll with mouse wheel
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      container.scrollLeft += e.deltaY;
+    };
+
+    container.addEventListener('wheel', handleWheel);
+    return () => container.removeEventListener('wheel', handleWheel);
+  }, []);
+
   return (
-    <div className="fixed bottom-0 left-0 right-0 w-full bg-black/80 backdrop-blur-xl border-t border-white/10 py-3 z-50">
-      <div className="w-full overflow-x-auto scrollbar-hide">
-        <div className="flex space-x-3 px-4 max-w-[2000px] mx-auto">
+    <div className="fixed bottom-6 left-0 right-0 z-50">
+      <div 
+        ref={scrollContainerRef}
+        className="mx-auto px-4 overflow-x-auto scrollbar-hide max-w-[2000px]"
+      >
+        <div className="flex space-x-2 pb-2">
           {photos.map((photo) => (
-            <button
+            <img
               key={`thumbnail-${photo.id}`}
+              src={photo.src}
+              alt={photo.title}
               onClick={() => onThumbnailClick(photo)}
               className={cn(
-                "relative flex-shrink-0 rounded-lg overflow-hidden border-2 transition-all duration-300",
+                "h-16 w-24 object-cover cursor-pointer rounded transition-all duration-300",
                 selectedPhoto?.id === photo.id 
-                  ? "border-white opacity-100" 
-                  : "border-transparent opacity-70 grayscale hover:opacity-90 hover:grayscale-0"
+                  ? "ring-2 ring-white opacity-100" 
+                  : "opacity-50 grayscale hover:opacity-75 hover:grayscale-0"
               )}
-              style={{ width: '100px', height: '75px' }}
-            >
-              <img 
-                src={photo.src} 
-                alt={photo.title} 
-                className="w-full h-full object-cover"
-                loading="lazy"
-              />
-            </button>
+              loading="lazy"
+            />
           ))}
         </div>
       </div>
