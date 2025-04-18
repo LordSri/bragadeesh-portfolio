@@ -73,8 +73,12 @@ const Index = () => {
         </section>
         
         <main id="work" ref={workSectionRef} className="flex-grow w-full mx-auto relative">
-          {/* Tab Navigation - Now sticky */}
-          <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
+          {/* Tab Navigation - Full width, responsive */}
+          <div className="sticky top-16 z-30 w-full bg-black/50 backdrop-blur-md border-b border-white/10 mb-6">
+            <div className="max-w-[2000px] mx-auto">
+              <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
+            </div>
+          </div>
           
           {/* Content with padding */}
           <div className="px-4 py-6 max-w-[2000px] mx-auto">

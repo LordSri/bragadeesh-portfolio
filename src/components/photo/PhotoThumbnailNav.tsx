@@ -54,12 +54,13 @@ const PhotoThumbnailNav: React.FC<PhotoThumbnailNavProps> = ({
   }, []);
 
   return (
-    <div className="fixed bottom-6 left-0 right-0 z-50">
+    <div className="fixed bottom-0 left-0 right-0 z-50 pb-4">
       <div 
         ref={scrollContainerRef}
-        className="mx-auto px-4 overflow-x-auto max-w-[2000px] scrollbar-hide"
+        className="mx-auto px-4 overflow-x-auto scrollbar-hide"
+        style={{ maxWidth: '100%' }}
       >
-        <div className="flex space-x-2 pb-2">
+        <div className="flex space-x-2 py-2">
           {photos.map((photo) => (
             <img
               key={`thumbnail-${photo.id}`}
@@ -68,10 +69,10 @@ const PhotoThumbnailNav: React.FC<PhotoThumbnailNavProps> = ({
               alt={photo.title}
               onClick={() => onThumbnailClick(photo)}
               className={cn(
-                "h-14 w-20 object-cover cursor-pointer rounded transition-all duration-300",
+                "h-12 w-16 object-cover cursor-pointer rounded transition-all duration-300",
                 selectedPhoto?.id === photo.id 
                   ? "ring-2 ring-white opacity-100" 
-                  : "opacity-50 grayscale hover:opacity-75 hover:grayscale-0"
+                  : "opacity-40 grayscale hover:opacity-70 hover:grayscale-0"
               )}
               loading="lazy"
             />

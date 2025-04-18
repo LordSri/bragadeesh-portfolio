@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Photo, ExifData, updatePhotoMetadata, deletePhoto } from '@/utils/photoUtils';
 import { ChevronRight, ChevronLeft, X, Calendar, Clock, MapPin, Camera, Pencil, Save, Trash2, Download, Award } from 'lucide-react';
@@ -105,13 +106,9 @@ const PhotoModal: React.FC<PhotoModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 animate-fade-in">
-      {/* Dynamic blurred background based on current photo */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20 backdrop-blur-2xl transition-all duration-300"
-        style={{ backgroundImage: `url(${photo.src})` }}
-      />
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+    <div className="fixed inset-0 z-50 animate-fade-in overflow-auto">
+      {/* Fixed background with blur effect */}
+      <div className="fixed inset-0 bg-black/80 backdrop-blur-md"></div>
 
       {/* Close button */}
       <div className="absolute top-4 right-4 z-10">
@@ -124,11 +121,11 @@ const PhotoModal: React.FC<PhotoModalProps> = ({
         </button>
       </div>
       
-      {/* Main content area with improved alignment */}
-      <div className="relative h-[calc(100vh-10rem)] flex items-center justify-center p-4 mt-4">
-        <div className="w-full h-full max-w-[2000px] mx-auto flex flex-col md:flex-row gap-4 md:gap-8">
+      {/* Main content area with improved vertical alignment */}
+      <div className="relative h-full min-h-screen flex items-center justify-center p-4 pb-24">
+        <div className="w-full max-w-[2000px] mx-auto flex flex-col md:flex-row gap-4 md:gap-8 items-center">
           {/* Left side - Image with proper vertical centering */}
-          <div className="flex-1 relative flex items-center justify-center">
+          <div className="flex-1 relative flex items-center justify-center w-full">
             {photo.beforeAfter ? (
               <div className="relative w-full h-full">
                 {/* Before/After slider implementation */}
@@ -162,23 +159,23 @@ const PhotoModal: React.FC<PhotoModalProps> = ({
                       onChange={(e) => setBeforeAfterSlider(parseInt(e.target.value))} 
                       className="w-full cursor-pointer appearance-none bg-transparent [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-12 [&::-webkit-slider-thumb]:w-2 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-blue-500"
                     />
-                  <div 
-                    className="absolute top-1/2 w-0.5 h-full bg-white pointer-events-none transform -translate-y-1/2" 
-                    style={{ left: `${beforeAfterSlider}%` }}
-                  />
+                    <div 
+                      className="absolute top-1/2 w-0.5 h-full bg-white pointer-events-none transform -translate-y-1/2" 
+                      style={{ left: `${beforeAfterSlider}%` }}
+                    />
+                  </div>
+                </div>
+                <div className="absolute top-4 left-4 bg-black/50 p-2 px-3 rounded-full text-xs font-medium">
+                  Before / After
                 </div>
               </div>
-              <div className="absolute top-4 left-4 bg-black/50 p-2 px-3 rounded-full text-xs font-medium">
-                Before / After
-              </div>
-            </div>
-          ) : (
-            <img 
-              src={photo.src} 
-              alt={photo.title} 
-              className="max-w-full max-h-full object-contain"
-            />
-          )}
+            ) : (
+              <img 
+                src={photo.src} 
+                alt={photo.title} 
+                className="max-w-full max-h-[70vh] object-contain"
+              />
+            )}
             
             {/* Navigation arrows with improved positioning */}
             <button 
@@ -197,9 +194,9 @@ const PhotoModal: React.FC<PhotoModalProps> = ({
             </button>
           </div>
           
-          {/* Right side - Details panel with proper spacing */}
+          {/* Right side - Details panel with improved spacing */}
           {showDetails && (
-            <div className="md:w-80 lg:w-96 glass-morphism rounded-xl flex flex-col h-full">
+            <div className="md:w-80 lg:w-96 glass-morphism rounded-xl flex flex-col max-h-[70vh] self-center">
               <div className="flex justify-between items-start p-6 pb-4">
                 <h2 className="text-2xl font-bold">{photo.title}</h2>
                 <div className="flex gap-2">

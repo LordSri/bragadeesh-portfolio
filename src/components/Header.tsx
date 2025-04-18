@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Instagram, Award, MessageSquare, Menu, X } from 'lucide-react';
+import { Instagram, Award, MessageSquare, Menu } from 'lucide-react';
 import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
 import { cn } from '@/lib/utils';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -113,14 +113,19 @@ const Header = () => {
                   <Menu size={20} />
                 </button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[80%] bg-black/95 backdrop-blur-xl border-l border-white/10">
-                <div className="flex flex-col h-full">
+              <SheetContent side="right" className="w-[80%] bg-black/95 backdrop-blur-xl border-l border-white/10 p-0">
+                <div className="flex flex-col h-full p-6">
                   <div className="flex justify-end mb-8">
+                    {/* Removed the duplicate X button here */}
                     <button 
                       onClick={() => setIsOpen(false)}
                       className="h-9 w-9 rounded-full glass-panel flex items-center justify-center"
                     >
-                      <X size={20} />
+                      <img 
+                        src="/lovable-uploads/7fda52d4-7cb3-4647-ab16-3706a07e11e9.png" 
+                        alt="Close" 
+                        className="w-4 h-4"
+                      />
                     </button>
                   </div>
                   
