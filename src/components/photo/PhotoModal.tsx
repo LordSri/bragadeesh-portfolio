@@ -92,8 +92,8 @@ const PhotoModal: React.FC<PhotoModalProps> = ({
     toast.success('Photo download started');
   };
   return <div className="fixed inset-0 z-50 animate-fade-in overflow-auto">
-      {/* Fixed background with specified opacity */}
-      <div className="fixed inset-0 bg-black/86 backdrop-blur-md"></div>
+      {/* Fixed background with blur effect */}
+      <div className="fixed inset-0 bg-black/80 backdrop-blur-md"></div>
 
       {/* Close button */}
       <div className="absolute top-4 right-4 z-10">
@@ -103,7 +103,7 @@ const PhotoModal: React.FC<PhotoModalProps> = ({
       </div>
       
       {/* Main content area with improved vertical alignment */}
-      <div className="relative h-full min-h-screen flex items-center justify-center p-4 pb-24 bg-black/90\n">
+      <div className="relative h-full min-h-screen flex items-center justify-center p-4 pb-24 bg-black">
         <div className="w-full max-w-[2000px] mx-auto flex flex-col md:flex-row gap-4 md:gap-8 items-center">
           {/* Left side - Image with proper vertical centering */}
           <div className="flex-1 relative flex items-center justify-center w-full">
