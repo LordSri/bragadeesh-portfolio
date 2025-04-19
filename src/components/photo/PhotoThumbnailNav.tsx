@@ -54,7 +54,7 @@ const PhotoThumbnailNav: React.FC<PhotoThumbnailNavProps> = ({
   }, []);
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 pb-4">
+    <div className="fixed bottom-0 left-0 right-0 z-50 pb-2 md:pb-4">
       <div 
         ref={scrollContainerRef}
         className="mx-auto px-4 overflow-x-auto scrollbar-hide"
@@ -69,12 +69,13 @@ const PhotoThumbnailNav: React.FC<PhotoThumbnailNavProps> = ({
               alt={photo.title}
               onClick={() => onThumbnailClick(photo)}
               className={cn(
-                "h-12 w-16 object-cover cursor-pointer rounded transition-all duration-300",
+                "h-10 w-14 object-cover cursor-pointer rounded-sm transition-all duration-300",
                 selectedPhoto?.id === photo.id 
-                  ? "ring-2 ring-white opacity-100" 
+                  ? "ring-2 ring-white opacity-100 scale-110" 
                   : "opacity-40 grayscale hover:opacity-70 hover:grayscale-0"
               )}
               loading="lazy"
+              onContextMenu={(e) => e.preventDefault()}
             />
           ))}
         </div>

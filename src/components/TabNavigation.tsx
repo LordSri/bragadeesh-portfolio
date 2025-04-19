@@ -17,7 +17,7 @@ const TabNavigation: React.FC<TabProps> = ({ activeTab, setActiveTab }) => {
   ];
 
   return (
-    <div className="w-full sticky top-[72px] z-30 px-4 py-2 bg-black/60 backdrop-blur-md">
+    <div className="w-full px-4 py-4 bg-black/60 backdrop-blur-md">
       <div className="w-full glass-panel rounded-2xl p-2 inline-flex backdrop-blur-xl bg-white/10 border border-red-500/20 shadow-lg">
         <div className="w-full overflow-x-auto scrollbar-hide">
           <nav className="flex justify-between md:justify-around min-w-max md:w-full">

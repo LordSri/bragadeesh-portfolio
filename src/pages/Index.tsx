@@ -73,8 +73,8 @@ const Index = () => {
         </section>
         
         <main id="work" ref={workSectionRef} className="flex-grow w-full mx-auto relative">
-          {/* Tab Navigation - Full width, responsive */}
-          <div className="sticky top-16 z-30 w-full bg-black/50 backdrop-blur-md border-b border-white/10 mb-6">
+          {/* Tab Navigation - Full width, static */}
+          <div className="w-full">
             <div className="max-w-[2000px] mx-auto">
               <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
             </div>

@@ -21,6 +21,24 @@ const PhotoGallery: React.FC = () => {
 
   useEffect(() => {
     loadPhotos();
+    
+    // Add smooth scrolling to the whole page
+    document.documentElement.style.scrollBehavior = 'smooth';
+    
+    // Prevent right-click on all images
+    const handleContextMenu = (e: MouseEvent) => {
+      if (e.target instanceof HTMLImageElement) {
+        e.preventDefault();
+        return false;
+      }
+    };
+    
+    document.addEventListener('contextmenu', handleContextMenu);
+    
+    return () => {
+      document.removeEventListener('contextmenu', handleContextMenu);
+      document.documentElement.style.scrollBehavior = '';
+    };
   }, []);
 
   // Handle photo selection for modal view
