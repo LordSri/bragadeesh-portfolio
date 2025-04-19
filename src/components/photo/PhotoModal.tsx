@@ -92,8 +92,8 @@ const PhotoModal: React.FC<PhotoModalProps> = ({
     toast.success('Photo download started');
   };
   return <div className="fixed inset-0 z-50 animate-fade-in overflow-auto">
-      {/* Fixed background with blur effect */}
-      <div className="fixed inset-0 bg-black/80 backdrop-blur-md"></div>
+      {/* Fixed background with specified opacity */}
+      <div className="fixed inset-0 bg-black/86 backdrop-blur-md"></div>
 
       {/* Close button */}
       <div className="absolute top-4 right-4 z-10">

@@ -49,12 +49,12 @@ const Footer = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div>
-                <h3 className="text-xl font-semibold mb-4 text-white">Jane Doe</h3>
+                <h3 className="text-xl font-semibold mb-4 text-white">Bragadeesh R</h3>
                 <p className="text-sm text-gray-400 mb-4">
                   Creative professional specializing in photography, videography, cinematography, and graphic design.
                 </p>
                 <p className="text-sm text-gray-400">
-                  Based in New York, NY<br />
+                  Based in Tamil Nadu, India<br />
                   Available for projects worldwide
                 </p>
               </div>
@@ -62,17 +62,17 @@ const Footer = () => {
               <div>
                 <h3 className="text-xl font-semibold mb-4 text-white">Get in Touch</h3>
                 <div className="space-y-4">
-                  <a href="mailto:jane.doe@example.com" className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors group">
+                  <a href="mailto:rramesh09444@gmail.com" className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors group">
                     <div className="h-10 w-10 rounded-full glass-morphism flex items-center justify-center group-hover:bg-white/20 transition-colors">
                       <Mail size={18} />
                     </div>
                     <span>Send me an email</span>
                   </a>
-                  <a href="https://wa.me/1234567890" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors group">
+                  <a href="tel:+919345994827" className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors group">
                     <div className="h-10 w-10 rounded-full glass-morphism flex items-center justify-center group-hover:bg-white/20 transition-colors">
                       <MessageSquare size={18} />
                     </div>
-                    <span>Message on WhatsApp</span>
+                    <span>Call or Message</span>
                   </a>
                 </div>
               </div>
@@ -80,15 +80,15 @@ const Footer = () => {
               <div>
                 <h3 className="text-xl font-semibold mb-4 text-white">Follow Me</h3>
                 <div className="flex gap-3 flex-wrap">
-                  <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="h-12 w-12 rounded-full glass-morphism flex items-center justify-center 
+                  <a href="https://instagram.com/bragadeesh001" target="_blank" rel="noopener noreferrer" className="h-12 w-12 rounded-full glass-morphism flex items-center justify-center 
                     hover:bg-white/20 transition-all hover:scale-110">
                     <Instagram size={20} />
                   </a>
-                  <a href="#" target="_blank" rel="noopener noreferrer" className="h-12 w-12 rounded-full glass-morphism flex items-center justify-center 
+                  <a href="https://35awards.com/author/bragadeeshr/" target="_blank" rel="noopener noreferrer" className="h-12 w-12 rounded-full glass-morphism flex items-center justify-center 
                     hover:bg-white/20 transition-all hover:scale-110">
                     <Award size={20} />
                   </a>
-                  <a href="https://wa.me/1234567890" target="_blank" rel="noopener noreferrer" className="h-12 w-12 rounded-full glass-morphism flex items-center justify-center 
+                  <a href="tel:+919345994827" className="h-12 w-12 rounded-full glass-morphism flex items-center justify-center 
                     hover:bg-white/20 transition-all hover:scale-110">
                     <MessageSquare size={20} />
                   </a>
@@ -100,7 +100,7 @@ const Footer = () => {
             
             <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-400">
               <div>
-                © {currentYear} Jane Doe Portfolio. All rights reserved.
+                © {currentYear} Bragadeesh R Portfolio. All rights reserved.
               </div>
               
               <div className="flex items-center">
