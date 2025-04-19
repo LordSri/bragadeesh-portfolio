@@ -103,7 +103,7 @@ const PhotoModal: React.FC<PhotoModalProps> = ({
       </div>
       
       {/* Main content area with improved vertical alignment */}
-      <div className="relative h-full min-h-screen flex items-center justify-center p-4 pb-24 bg-black/85\n">
+      <div className="relative h-full min-h-screen flex items-center justify-center p-4 pb-24 bg-black/90\n">
         <div className="w-full max-w-[2000px] mx-auto flex flex-col md:flex-row gap-4 md:gap-8 items-center">
           {/* Left side - Image with proper vertical centering */}
           <div className="flex-1 relative flex items-center justify-center w-full">
