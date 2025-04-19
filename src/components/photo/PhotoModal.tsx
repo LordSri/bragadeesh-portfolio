@@ -102,11 +102,11 @@ const PhotoModal: React.FC<PhotoModalProps> = ({
         </button>
       </div>
       
-      {/* Main content area with improved vertical alignment */}
-      <div className="relative h-full min-h-screen flex items-center justify-center p-4 pb-24 bg-black">
-        <div className="w-full max-w-[2000px] mx-auto flex flex-col md:flex-row gap-4 md:gap-8 items-center">
-          {/* Left side - Image with proper vertical centering */}
-          <div className="flex-1 relative flex items-center justify-center w-full">
+      {/* Main content area with improved vertical alignment and mobile scroll */}
+      <div className="relative min-h-screen flex flex-col md:flex-row items-start md:items-center justify-center p-4 pb-24 bg-black overflow-y-auto">
+        <div className="w-full max-w-[2000px] mx-auto flex flex-col md:flex-row gap-4 md:gap-8 items-start md:items-center">
+          {/* Left side - Image with proper centering and mobile scroll */}
+          <div className="flex-1 relative flex items-start md:items-center justify-center w-full">
             {photo.beforeAfter ? <div className="relative w-full h-full">
                 {/* Before/After slider implementation */}
                 <div className="absolute inset-0 overflow-hidden">
@@ -130,9 +130,22 @@ const PhotoModal: React.FC<PhotoModalProps> = ({
                 <div className="absolute top-4 left-4 bg-black/50 p-2 px-3 rounded-full text-xs font-medium">
                   Before / After
                 </div>
-              </div> : <img src={photo.src} alt={photo.title} className="max-w-full max-h-[70vh] object-contain" />}
+              </div> : <div className="w-full relative">
+                <img 
+                  src={photo.src} 
+                  alt={photo.title} 
+                  className="w-full max-w-full object-contain select-none" 
+                  style={{
+                    maxHeight: 'calc(100vh - 8rem)',
+                    touchAction: 'none',
+                    WebkitTouchCallout: 'none',
+                    pointerEvents: 'none'
+                  }}
+                  onContextMenu={(e) => e.preventDefault()}
+                />
+              </div>}
             
-            {/* Navigation arrows with improved positioning */}
+            {/* Navigation arrows */}
             <button onClick={() => onNavigate('prev')} className="absolute left-4 top-1/2 transform -translate-y-1/2 h-12 w-12 rounded-full glass-morphism flex items-center justify-center hover:bg-white/10 transition-colors" aria-label="Previous photo">
               <ChevronLeft size={28} />
             </button>
@@ -141,7 +154,7 @@ const PhotoModal: React.FC<PhotoModalProps> = ({
             </button>
           </div>
           
-          {/* Right side - Details panel with improved spacing */}
+          {/* Right side - Details panel */}
           {showDetails && <div className="md:w-80 lg:w-96 glass-morphism rounded-xl flex flex-col max-h-[70vh] self-center">
               <div className="flex justify-between items-start p-6 pb-4">
                 <h2 className="text-2xl font-bold">{photo.title}</h2>
