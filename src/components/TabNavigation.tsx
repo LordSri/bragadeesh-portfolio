@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Image, Video, Film, Palette, Lock } from 'lucide-react';
+import { Image, Video, Film, Palette, LockIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface TabProps {
@@ -62,7 +62,7 @@ const TabNavigation: React.FC<TabProps> = ({
               <span>{tab.label}</span>
               {tab.locked && (
                 <span className="absolute -top-2 -right-2 bg-red-500/20 p-1 rounded-full">
-                  <Lock size={12} />
+                  <LockIcon size={12} />
                 </span>
               )}
             </button>
