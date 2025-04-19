@@ -73,8 +73,8 @@ const Index = () => {
         </section>
         
         <main id="work" ref={workSectionRef} className="flex-grow w-full mx-auto relative">
-          {/* Tab Navigation - Static and full width */}
-          <div className="w-full sticky top-[72px] z-30 bg-black/86 backdrop-blur-xl py-2 border-y border-white/10 shadow-lg">
+          {/* Tab Navigation - Now static */}
+          <div className="w-full bg-black/86 py-2 border-y border-white/10 shadow-lg">
             <div className="max-w-[2000px] mx-auto px-4">
               <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
             </div>
@@ -82,6 +82,18 @@ const Index = () => {
           
           {/* Content with padding */}
           <div className="px-4 py-6 max-w-[2000px] mx-auto">
+            {/* Coming Soon Overlays for inactive tabs */}
+            {activeTab !== 'photos' && (
+              <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/86 backdrop-blur-sm">
+                <div className="text-center space-y-4">
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-500/20 mb-4">
+                    <Lock className="w-8 h-8" />
+                  </div>
+                  <h2 className="text-2xl font-bold text-white">Coming Soon</h2>
+                  <p className="text-gray-400">This section is currently under development</p>
+                </div>
+              </div>
+            )}
             {renderTabContent()}
           </div>
         </main>
