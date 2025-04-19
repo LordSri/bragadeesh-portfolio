@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Instagram, Award, MessageSquare, Menu, X } from 'lucide-react';
+import { Instagram, Award, MessageSquare, Menu } from 'lucide-react';
 import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
 import { cn } from '@/lib/utils';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -35,17 +35,17 @@ const Header = () => {
 
   const SocialIcons = () => (
     <div className="flex gap-3 items-center">
-      <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" 
+      <a href="https://instagram.com/bragadeesh001" target="_blank" rel="noopener noreferrer" 
         className="h-8 w-8 rounded-full glass-panel flex items-center justify-center 
         hover:bg-white/20 transition-colors">
         <Instagram size={16} />
       </a>
-      <a href="#" target="_blank" rel="noopener noreferrer" 
+      <a href="https://35awards.com/author/bragadeeshr/" target="_blank" rel="noopener noreferrer" 
         className="h-8 w-8 rounded-full glass-panel flex items-center justify-center 
         hover:bg-white/20 transition-colors">
         <Award size={16} />
       </a>
-      <a href="https://wa.me/1234567890" target="_blank" rel="noopener noreferrer" 
+      <a href="https://wa.me/919345994827" target="_blank" rel="noopener noreferrer" 
         className="h-8 w-8 rounded-full glass-panel flex items-center justify-center 
         hover:bg-white/20 transition-colors">
         <MessageSquare size={16} />
@@ -55,7 +55,7 @@ const Header = () => {
 
   return (
     <header className="fixed top-0 left-0 right-0 w-full z-40">
-      <div className="w-full backdrop-blur-xl bg-black/50 border-b border-white/10 shadow-lg">
+      <div className="w-full backdrop-blur-xl bg-black/86 border-b border-white/10 shadow-lg">
         <div className="max-w-[2000px] mx-auto py-4 px-4 md:px-6 flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center">
@@ -113,14 +113,15 @@ const Header = () => {
                   <Menu size={20} />
                 </button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[80%] bg-black/95 backdrop-blur-xl border-l border-white/10 p-0">
+              <SheetContent side="right" className="w-[80%] bg-black/86 backdrop-blur-xl border-l border-white/10 p-0">
                 <div className="flex flex-col h-full p-6">
                   <div className="flex justify-end mb-8">
                     <button 
                       onClick={() => setIsOpen(false)}
                       className="h-9 w-9 rounded-full glass-panel flex items-center justify-center"
                     >
-                      <X size={16} />
+                      <span className="sr-only">Close Menu</span>
+                      {/* No X icon here, the SheetContent has its own */}
                     </button>
                   </div>
                   

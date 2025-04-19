@@ -73,9 +73,9 @@ const Index = () => {
         </section>
         
         <main id="work" ref={workSectionRef} className="flex-grow w-full mx-auto relative">
-          {/* Tab Navigation - Full width, static */}
-          <div className="w-full">
-            <div className="max-w-[2000px] mx-auto">
+          {/* Tab Navigation - Static and full width */}
+          <div className="w-full sticky top-[72px] z-30 bg-black/86 backdrop-blur-xl py-2 border-y border-white/10 shadow-lg">
+            <div className="max-w-[2000px] mx-auto px-4">
               <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
             </div>
           </div>
@@ -88,6 +88,23 @@ const Index = () => {
       </div>
       
       <Footer />
+
+      {/* Add script to prevent right-click on images */}
+      <script 
+        dangerouslySetInnerHTML={{
+          __html: `
+            document.addEventListener('contextmenu', function(e) {
+              if (e.target.nodeName === 'IMG') {
+                e.preventDefault();
+                return false;
+              }
+            });
+            
+            // Add smooth scrolling behavior to the document
+            document.documentElement.style.scrollBehavior = 'smooth';
+          `
+        }} 
+      />
     </div>
   );
 };
