@@ -29,31 +29,42 @@ export interface Photo {
   beforeAfter?: BeforeAfterData;
   storageId?: string;
   fileName?: string;
+  cloudinaryId?: string;
+  cloudinaryUrl?: string;
 }
 
-// Upload photo to Supabase storage
-export const uploadPhoto = async (file: File): Promise<string | null> => {
+// Upload photo to Cloudinary via the Supabase Edge Function
+export const uploadPhoto = async (file: File): Promise<{ storageId: string | null, cloudinaryUrl: string | null, cloudinaryId: string | null }> => {
   try {
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${uuidv4()}.${fileExt}`;
-    const filePath = `${fileName}`;
+    const formData = new FormData();
+    formData.append("file", file);
     
-    const { data, error } = await supabase.storage
-      .from('photos')
-      .upload(filePath, file, {
-        cacheControl: '3600',
-        upsert: false
-      });
-
-    if (error) {
-      throw new Error(error.message);
+    const response = await fetch("/api/upload-to-cloudinary", {
+      method: "POST",
+      body: formData,
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Failed to upload photo");
     }
-
-    return data.path;
+    
+    const cloudinaryData = await response.json();
+    
+    // Return the Cloudinary data
+    return {
+      storageId: null, // We're not using Supabase storage anymore
+      cloudinaryUrl: cloudinaryData.secure_url,
+      cloudinaryId: cloudinaryData.public_id
+    };
   } catch (error) {
     console.error('Error uploading file:', error);
     toast.error('Failed to upload photo');
-    return null;
+    return {
+      storageId: null,
+      cloudinaryUrl: null,
+      cloudinaryId: null
+    };
   }
 };
 
@@ -63,14 +74,16 @@ export const savePhotoMetadata = async (photo: Omit<Photo, 'id'>): Promise<strin
     const { data, error } = await supabase
       .from('photo_metadata')
       .insert({
-        storage_id: photo.storageId,
+        storage_id: photo.storageId || null,
         file_name: photo.fileName,
         title: photo.title,
         description: photo.description,
         award: photo.award,
         aspect_ratio: photo.aspectRatio,
         exif: photo.exif as unknown as Json,
-        before_after: photo.beforeAfter as unknown as Json
+        before_after: photo.beforeAfter as unknown as Json,
+        cloudinary_id: photo.cloudinaryId,
+        cloudinary_url: photo.cloudinaryUrl
       })
       .select('id')
       .single();
@@ -101,7 +114,7 @@ export const fetchPhotoMetadata = async (): Promise<Photo[]> => {
 
     return data.map(item => ({
       id: item.id,
-      src: getPublicUrl(item.storage_id),
+      src: item.cloudinary_url || getPublicUrl(item.storage_id), // Prefer Cloudinary URL if available
       title: item.title || 'Untitled',
       description: item.description || '',
       award: item.award || undefined,
@@ -109,7 +122,9 @@ export const fetchPhotoMetadata = async (): Promise<Photo[]> => {
       exif: item.exif as unknown as ExifData,
       beforeAfter: item.before_after as unknown as BeforeAfterData,
       storageId: item.storage_id,
-      fileName: item.file_name
+      fileName: item.file_name,
+      cloudinaryId: item.cloudinary_id,
+      cloudinaryUrl: item.cloudinary_url
     }));
   } catch (error) {
     console.error('Error fetching photo metadata:', error);
@@ -146,15 +161,32 @@ export const updatePhotoMetadata = async (id: string, updates: Partial<Photo>): 
 };
 
 // Delete photo and its metadata
-export const deletePhoto = async (id: string, storageId: string): Promise<boolean> => {
+export const deletePhoto = async (id: string, cloudinaryId?: string, storageId?: string): Promise<boolean> => {
   try {
-    // Delete from storage
-    const { error: storageError } = await supabase.storage
-      .from('photos')
-      .remove([storageId]);
+    // If we have a Cloudinary ID, delete from Cloudinary via edge function
+    if (cloudinaryId) {
+      const response = await fetch("/api/delete-from-cloudinary", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ publicId: cloudinaryId }),
+      });
+      
+      if (!response.ok) {
+        console.error('Failed to delete from Cloudinary');
+      }
+    }
+    
+    // If we still have a storage ID (legacy), delete from storage
+    if (storageId) {
+      const { error: storageError } = await supabase.storage
+        .from('photos')
+        .remove([storageId]);
 
-    if (storageError) {
-      throw new Error(storageError.message);
+      if (storageError) {
+        console.error('Error deleting from storage:', storageError);
+      }
     }
 
     // Delete metadata
@@ -175,8 +207,9 @@ export const deletePhoto = async (id: string, storageId: string): Promise<boolea
   }
 };
 
-// Get public URL for a storage item
+// Get public URL for a storage item (legacy support)
 export const getPublicUrl = (path: string): string => {
+  if (!path) return '';
   const { data } = supabase.storage.from('photos').getPublicUrl(path);
   return data.publicUrl;
 };

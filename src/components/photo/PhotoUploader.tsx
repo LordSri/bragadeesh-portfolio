@@ -31,10 +31,11 @@ const PhotoUploader: React.FC<PhotoUploaderProps> = ({ onPhotoUploaded }) => {
     try {
       // Process each file
       for (const file of files) {
-        // Upload to Supabase Storage
-        const storageId = await uploadPhoto(file);
+        // Upload to Cloudinary via Edge Function
+        const { cloudinaryUrl, cloudinaryId } = await uploadPhoto(file);
         
-        if (!storageId) {
+        if (!cloudinaryUrl || !cloudinaryId) {
+          toast.error(`Failed to upload ${file.name}`);
           continue; // Skip if upload failed
         }
 
@@ -45,14 +46,15 @@ const PhotoUploader: React.FC<PhotoUploaderProps> = ({ onPhotoUploaded }) => {
           img.onload = resolve;
         });
 
-        // Save metadata
+        // Save metadata to Supabase
         await savePhotoMetadata({
-          src: '', // Will be generated from storageId
+          src: cloudinaryUrl,
           title: file.name.split('.')[0],
           description: '',
           aspectRatio: calculateAspectRatio(img.width, img.height),
-          storageId: storageId,
           fileName: file.name,
+          cloudinaryId: cloudinaryId,
+          cloudinaryUrl: cloudinaryUrl,
           exif: {
             date: new Date().toLocaleDateString()
           }
@@ -77,7 +79,7 @@ const PhotoUploader: React.FC<PhotoUploaderProps> = ({ onPhotoUploaded }) => {
     <div className="mb-8 p-4 bg-gray-900/50 rounded-xl border border-dashed border-slate-700">
       <h3 className="text-lg font-medium mb-2">Upload Photos</h3>
       <p className="text-sm text-gray-400 mb-4">
-        Upload photos to your gallery. They'll be stored permanently.
+        Upload photos to your gallery. They'll be stored on Cloudinary.
       </p>
       <div className="flex items-center space-x-4">
         <Button 
