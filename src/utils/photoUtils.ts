@@ -9,6 +9,11 @@ export interface ExifData {
   date?: string;
   location?: string;
   exposure?: string;
+  aperture?: string;
+  iso?: string;
+  focalLength?: string;
+  make?: string;
+  model?: string;
   [key: string]: string | undefined; // Add index signature to make compatible with Json type
 }
 
@@ -29,6 +34,10 @@ export interface Photo {
   beforeAfter?: BeforeAfterData;
   storageId?: string;
   fileName?: string;
+  url?: string;          // Adding url property
+  path?: string;         // Adding path property
+  created_at?: string;   // Adding created_at property
+  metadata?: ExifData;   // Adding metadata property for backward compatibility
 }
 
 // Upload photo to Supabase storage
@@ -102,14 +111,18 @@ export const fetchPhotoMetadata = async (): Promise<Photo[]> => {
     return data.map(item => ({
       id: item.id,
       src: getPublicUrl(item.storage_id),
+      url: getPublicUrl(item.storage_id), // Add url property
+      path: item.storage_id, // Add path property
       title: item.title || 'Untitled',
       description: item.description || '',
       award: item.award || undefined,
       aspectRatio: item.aspect_ratio || 'auto',
       exif: item.exif as unknown as ExifData,
+      metadata: item.exif as unknown as ExifData, // Add metadata property
       beforeAfter: item.before_after as unknown as BeforeAfterData,
       storageId: item.storage_id,
-      fileName: item.file_name
+      fileName: item.file_name,
+      created_at: item.created_at
     }));
   } catch (error) {
     console.error('Error fetching photo metadata:', error);

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Star, StarHalf } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -46,21 +45,23 @@ const PhotoRating: React.FC<PhotoRatingProps> = ({
     const checkUserRating = async () => {
       const userId = generateUniqueId();
       
-      // Check if user has already rated this photo
-      const { data: existingRating } = await supabase
-        .from('photo_ratings')
-        .select('rating')
-        .eq('photo_id', photoId)
-        .eq('user_id', userId)
-        .single();
-      
-      if (existingRating) {
-        setRating(existingRating.rating);
-        setHasRated(true);
+      try {
+        // Check if user has already rated this photo
+        const { data: existingRating, error: ratingError } = await supabase
+          .rpc('get_user_photo_rating', { photo_id_param: photoId, user_id_param: userId });
+        
+        if (ratingError) {
+          console.error('Error checking user rating:', ratingError);
+        } else if (existingRating) {
+          setRating(existingRating.rating);
+          setHasRated(true);
+        }
+        
+        // Fetch average rating
+        fetchAverageRating();
+      } catch (error) {
+        console.error('Error in checkUserRating:', error);
       }
-      
-      // Fetch average rating
-      fetchAverageRating();
     };
     
     checkUserRating();
@@ -68,20 +69,24 @@ const PhotoRating: React.FC<PhotoRatingProps> = ({
   
   // Fetch average rating for the photo
   const fetchAverageRating = async () => {
-    const { data, error } = await supabase
-      .from('photo_ratings')
-      .select('rating')
-      .eq('photo_id', photoId);
+    try {
+      // Create a custom RPC call to get ratings for a specific photo
+      const { data, error } = await supabase
+        .rpc('get_photo_ratings', { photo_id_param: photoId });
+        
+      if (error) {
+        console.error('Error fetching ratings:', error);
+        return;
+      }
       
-    if (error) {
-      console.error('Error fetching ratings:', error);
-      return;
-    }
-    
-    if (data && data.length > 0) {
-      const total = data.reduce((sum, item) => sum + item.rating, 0);
-      setAverageRating(total / data.length);
-      setRatingCount(data.length);
+      if (data && data.length > 0) {
+        const ratings = data.map(item => item.rating);
+        const total = ratings.reduce((sum, rating) => sum + rating, 0);
+        setAverageRating(total / ratings.length);
+        setRatingCount(ratings.length);
+      }
+    } catch (error) {
+      console.error('Error in fetchAverageRating:', error);
     }
   };
   
@@ -91,35 +96,38 @@ const PhotoRating: React.FC<PhotoRatingProps> = ({
     
     const userId = generateUniqueId();
     
-    // Insert rating
-    const { error } = await supabase
-      .from('photo_ratings')
-      .insert({
-        photo_id: photoId,
-        user_id: userId,
-        rating: value
+    try {
+      // Insert rating using a custom RPC function
+      const { error } = await supabase
+        .rpc('add_photo_rating', { 
+          photo_id_param: photoId,
+          user_id_param: userId,
+          rating_param: value
+        });
+        
+      if (error) {
+        console.error('Error submitting rating:', error);
+        toast({
+          title: "Rating failed",
+          description: "Unable to submit your rating. Please try again.",
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      setRating(value);
+      setHasRated(true);
+      
+      toast({
+        title: "Rating submitted",
+        description: "Thank you for rating this photo!",
       });
       
-    if (error) {
-      console.error('Error submitting rating:', error);
-      toast({
-        title: "Rating failed",
-        description: "Unable to submit your rating. Please try again.",
-        variant: "destructive"
-      });
-      return;
+      // Update average rating
+      fetchAverageRating();
+    } catch (error) {
+      console.error('Error in handleRatingClick:', error);
     }
-    
-    setRating(value);
-    setHasRated(true);
-    
-    toast({
-      title: "Rating submitted",
-      description: "Thank you for rating this photo!",
-    });
-    
-    // Update average rating
-    fetchAverageRating();
   };
   
   // Render stars with the provided rating
