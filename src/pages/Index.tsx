@@ -7,7 +7,6 @@ import VideoGallery from '@/components/VideoGallery';
 import CinematographyTab from '@/components/CinematographyTab';
 import GraphicDesignTab from '@/components/GraphicDesignTab';
 import Footer from '@/components/Footer';
-import { Lock } from 'lucide-react';  // Make sure this is properly imported
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState('photos');
@@ -83,18 +82,6 @@ const Index = () => {
           
           {/* Content with padding */}
           <div className="px-4 py-6 max-w-[2000px] mx-auto">
-            {/* Coming Soon Overlays for inactive tabs */}
-            {activeTab !== 'photos' && (
-              <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/86 backdrop-blur-sm">
-                <div className="text-center space-y-4">
-                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-500/20 mb-4">
-                    <Lock size={24} /> {/* Using the correct Lock icon component with size prop */}
-                  </div>
-                  <h2 className="text-2xl font-bold text-white">Coming Soon</h2>
-                  <p className="text-gray-400">This section is currently under development</p>
-                </div>
-              </div>
-            )}
             {renderTabContent()}
           </div>
         </main>
@@ -115,6 +102,22 @@ const Index = () => {
             
             // Add smooth scrolling behavior to the document
             document.documentElement.style.scrollBehavior = 'smooth';
+            
+            // Remove any "Update project" or "Edit with" popups
+            window.addEventListener('DOMContentLoaded', () => {
+              const removePopups = () => {
+                const popups = document.querySelectorAll('[class*="update"], [class*="edit"], [class*="popup"]');
+                popups.forEach(popup => {
+                  if (popup.parentNode) {
+                    popup.parentNode.removeChild(popup);
+                  }
+                });
+              };
+              
+              // Run initially and periodically to catch delayed popups
+              removePopups();
+              setInterval(removePopups, 1000);
+            });
           `
         }} 
       />

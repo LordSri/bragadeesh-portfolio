@@ -43,7 +43,6 @@ const TabNavigation: React.FC<TabProps> = ({
 
   // Compute indexes of the locked tabs
   const firstLocked = tabs.findIndex(tab => tab.locked);
-  const lockedTabsCount = tabs.filter(tab => tab.locked).length;
 
   return (
     <div className="w-full px-4 py-4 backdrop-blur-md bg-transparent relative">
@@ -73,33 +72,23 @@ const TabNavigation: React.FC<TabProps> = ({
               </button>
             ))}
 
-            {/* Physical glassmorph "window" overlay for locked tabs */}
-            <div
-              className={cn(
-                "absolute top-0 left-0 h-full flex items-center justify-center",
-                // Responsive calculation: base the left offset/width on the locked tabs' positions
-                "transition-all duration-300 pointer-events-auto"
-              )}
-              style={{
-                left: `${(firstLocked / tabs.length) * 100}%`,
-                width: `${(lockedTabsCount / tabs.length) * 100}%`,
-                zIndex: 10
-              }}
-            >
-              <div
-                className="w-full h-[80%] mx-2 flex flex-col justify-center items-center rounded-xl glass-morphism bg-black/50 border border-white/20 shadow-2xl relative z-20 select-none"
+            {/* Enhanced glassmorphism overlay for locked tabs */}
+            {firstLocked !== -1 && (
+              <div 
+                className="absolute top-0 right-0 h-full rounded-r-xl glass-morphism flex items-center justify-center z-10"
                 style={{
-                  backdropFilter: "blur(18px)",
-                  minWidth: "110px",
-                  maxWidth: "500px"
+                  width: `${(tabs.length - firstLocked) / tabs.length * 100}%`,
+                  backdropFilter: "blur(8px)",
+                  backgroundColor: "rgba(0, 0, 0, 0.5)",
+                  border: "1px solid rgba(255, 255, 255, 0.1)"
                 }}
               >
-                <div className="flex flex-col items-center justify-center w-full h-full px-2">
+                <div className="flex flex-col items-center justify-center p-2 text-center">
                   <span className="text-xl font-bold text-white drop-shadow-md mb-1">Coming Soon</span>
-                  <span className="text-sm text-gray-200 opacity-80">These sections are in progress</span>
+                  <span className="text-sm text-white/80">These features are under development</span>
                 </div>
               </div>
-            </div>
+            )}
           </nav>
         </div>
       </div>
@@ -108,4 +97,3 @@ const TabNavigation: React.FC<TabProps> = ({
 };
 
 export default TabNavigation;
-

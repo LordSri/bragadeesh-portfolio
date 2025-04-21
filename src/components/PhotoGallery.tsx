@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import PhotoUploader from '@/components/photo/PhotoUploader';
 import PhotoGrid from '@/components/photo/PhotoGrid';
-import PhotoModal from '@/components/photo/PhotoModal';
+import PhotoModalRatingWrapper from '@/components/photo/PhotoModalRatingWrapper'; // New import
 import PhotoThumbnailNav from '@/components/photo/PhotoThumbnailNav';
 import { fetchPhotoMetadata, Photo } from '@/utils/photoUtils';
 
@@ -120,7 +120,7 @@ const PhotoGallery: React.FC = () => {
       {/* Modal with selected photo */}
       {selectedPhoto && (
         <>
-          <PhotoModal 
+          <PhotoModalRatingWrapper 
             photo={selectedPhoto} 
             photos={photos}
             onClose={closeModal} 
