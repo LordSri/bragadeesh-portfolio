@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -17,51 +16,10 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@lovable_dev" />
     <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-    
-    <style>
-      /* Hide any editor/update widgets */
-      [class*="lovable-"], [id*="lovable-"], [class*="gptengineer"], [id*="gptengineer"] {
-        display: none !important;
-        visibility: hidden !important;
-        opacity: 0 !important;
-        pointer-events: none !important;
-      }
-    </style>
   </head>
 
   <body>
     <div id="root"></div>
-    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
     <script type="module" src="/src/main.tsx"></script>
-    <script>
-      // Remove any unwanted popups
-      function removePopups() {
-        const selectors = [
-          '[class*="lovable"]',
-          '[id*="lovable"]',
-          '[class*="gptengineer"]', 
-          '[id*="gptengineer"]',
-          '[class*="update"]',
-          '[class*="popup"]',
-          '[class*="toast"]:not(.notification)'
-        ];
-        
-        selectors.forEach(selector => {
-          document.querySelectorAll(selector).forEach(el => {
-            if (el.parentNode) {
-              el.parentNode.removeChild(el);
-            }
-          });
-        });
-      }
-      
-      // Run immediately and periodically
-      removePopups();
-      setInterval(removePopups, 500);
-      
-      // Also run when DOM changes
-      const observer = new MutationObserver(removePopups);
-      observer.observe(document.body, { childList: true, subtree: true });
-    </script>
   </body>
 </html>
