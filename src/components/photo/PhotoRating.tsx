@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Star, StarHalf } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -46,14 +47,17 @@ const PhotoRating: React.FC<PhotoRatingProps> = ({
       const userId = generateUniqueId();
       
       try {
-        // Check if user has already rated this photo
-        const { data: existingRating, error: ratingError } = await supabase
-          .rpc('get_user_photo_rating', { photo_id_param: photoId, user_id_param: userId });
+        // Check if user has already rated this photo using the RPC function
+        const { data: userRating, error: ratingError } = await supabase
+          .rpc('get_user_photo_rating', { 
+            photo_id_param: photoId, 
+            user_id_param: userId 
+          });
         
         if (ratingError) {
           console.error('Error checking user rating:', ratingError);
-        } else if (existingRating) {
-          setRating(existingRating.rating);
+        } else if (userRating && userRating.length > 0) {
+          setRating(userRating[0].rating);
           setHasRated(true);
         }
         
@@ -67,37 +71,38 @@ const PhotoRating: React.FC<PhotoRatingProps> = ({
     checkUserRating();
   }, [photoId]);
   
-  // Fetch average rating for the photo
+  // Fetch average rating for the photo using the RPC function
   const fetchAverageRating = async () => {
     try {
-      // Create a custom RPC call to get ratings for a specific photo
-      const { data, error } = await supabase
-        .rpc('get_photo_ratings', { photo_id_param: photoId });
+      const { data: ratings, error } = await supabase
+        .rpc('get_photo_ratings', { 
+          photo_id_param: photoId 
+        });
         
       if (error) {
         console.error('Error fetching ratings:', error);
         return;
       }
       
-      if (data && data.length > 0) {
-        const ratings = data.map(item => item.rating);
-        const total = ratings.reduce((sum, rating) => sum + rating, 0);
-        setAverageRating(total / ratings.length);
-        setRatingCount(ratings.length);
+      if (ratings && ratings.length > 0) {
+        const ratingValues = ratings.map(item => item.rating);
+        const total = ratingValues.reduce((sum, rating) => sum + rating, 0);
+        setAverageRating(total / ratingValues.length);
+        setRatingCount(ratingValues.length);
       }
     } catch (error) {
       console.error('Error in fetchAverageRating:', error);
     }
   };
   
-  // Submit user rating
+  // Submit user rating using the RPC function
   const handleRatingClick = async (value: number) => {
     if (hasRated) return;
     
     const userId = generateUniqueId();
     
     try {
-      // Insert rating using a custom RPC function
+      // Use the add_photo_rating RPC function
       const { error } = await supabase
         .rpc('add_photo_rating', { 
           photo_id_param: photoId,
