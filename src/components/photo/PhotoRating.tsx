@@ -10,6 +10,15 @@ interface PhotoRatingProps {
   photoId: string;
 }
 
+// Define types for our RPC responses
+interface UserRatingResponse {
+  rating: number;
+}
+
+interface PhotoRatingsResponse {
+  rating: number;
+}
+
 // Create a custom hook for managing user identity
 const useUserId = () => {
   const [userId, setUserId] = useState<string | null>(null);
@@ -52,8 +61,8 @@ export const PhotoRating: React.FC<PhotoRatingProps> = ({ photoId }) => {
         return;
       }
       
-      if (data && data.length > 0) {
-        setUserRating(data[0].rating);
+      if (data && Array.isArray(data) && data.length > 0) {
+        setUserRating(data[0]?.rating);
       }
     } catch (error) {
       console.error("Error checking user rating:", error);
@@ -73,9 +82,9 @@ export const PhotoRating: React.FC<PhotoRatingProps> = ({ photoId }) => {
         return;
       }
       
-      if (data && data.length > 0) {
+      if (data && Array.isArray(data) && data.length > 0) {
         // Calculate average rating
-        const sum = data.reduce((acc: number, curr: { rating: number }) => acc + curr.rating, 0);
+        const sum = data.reduce((acc: number, curr: PhotoRatingsResponse) => acc + curr.rating, 0);
         setAverageRating(parseFloat((sum / data.length).toFixed(1)));
         setTotalRatings(data.length);
       }

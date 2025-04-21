@@ -61,7 +61,7 @@ const TabNavigation: React.FC<TabProps> = ({
               </span>
               <span>{tab.label}</span>
               {tab.locked && (
-                <span className="absolute top-2 right-2 bg-red-500/20 p-1 rounded-full">
+                <span className="absolute -top-1 -right-1 bg-red-500/30 p-1 rounded-full">
                   <LockIcon size={12} />
                 </span>
               )}
