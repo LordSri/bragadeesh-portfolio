@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Star } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 
@@ -10,14 +10,18 @@ interface PhotoRatingProps {
 }
 
 // Define proper response types for RPC functions
-interface UserRatingResponse {
+interface RatingData {
   rating: number;
 }
 
+interface UserRatingResponse {
+  data?: RatingData[];
+  error?: Error;
+}
+
 interface PhotoRatingsResponse {
-  ratings: {
-    rating: number;
-  }[];
+  data?: { ratings: RatingData[] }[];
+  error?: Error;
 }
 
 const PhotoRating: React.FC<PhotoRatingProps> = ({ photoId }) => {
@@ -46,7 +50,7 @@ const PhotoRating: React.FC<PhotoRatingProps> = ({ photoId }) => {
    */
   const checkUserRating = async (uid: string) => {
     try {
-      const { data, error } = await supabase
+      const { data, error }: UserRatingResponse = await supabase
         .rpc('get_user_photo_rating', { 
           photo_id_param: photoId,
           user_id_param: uid
@@ -70,9 +74,9 @@ const PhotoRating: React.FC<PhotoRatingProps> = ({ photoId }) => {
    */
   const fetchAverageRating = async () => {
     try {
-      const { data, error } = await supabase
+      const { data, error }: PhotoRatingsResponse = await supabase
         .rpc('get_photo_ratings', { 
-          photo_id_param: photoId 
+          photo_id_param: photoId
         });
       
       if (error) {
