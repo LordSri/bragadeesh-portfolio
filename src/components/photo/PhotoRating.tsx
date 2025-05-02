@@ -15,13 +15,13 @@ interface RatingData {
 }
 
 interface UserRatingResponse {
-  data?: RatingData[];
-  error?: Error;
+  data: RatingData[] | null;
+  error: Error | null;
 }
 
 interface PhotoRatingsResponse {
-  data?: { ratings: RatingData[] }[];
-  error?: Error;
+  data: { ratings: RatingData[] }[] | null;
+  error: Error | null;
 }
 
 const PhotoRating: React.FC<PhotoRatingProps> = ({ photoId }) => {
@@ -50,11 +50,11 @@ const PhotoRating: React.FC<PhotoRatingProps> = ({ photoId }) => {
    */
   const checkUserRating = async (uid: string) => {
     try {
-      const { data, error }: UserRatingResponse = await supabase
+      const { data, error } = await supabase
         .rpc('get_user_photo_rating', { 
           photo_id_param: photoId,
           user_id_param: uid
-        });
+        }) as UserRatingResponse;
       
       if (error) {
         console.error('Error fetching user rating:', error);
@@ -74,10 +74,10 @@ const PhotoRating: React.FC<PhotoRatingProps> = ({ photoId }) => {
    */
   const fetchAverageRating = async () => {
     try {
-      const { data, error }: PhotoRatingsResponse = await supabase
+      const { data, error } = await supabase
         .rpc('get_photo_ratings', { 
           photo_id_param: photoId
-        });
+        }) as PhotoRatingsResponse;
       
       if (error) {
         console.error('Error fetching ratings:', error);
