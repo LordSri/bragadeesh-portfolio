@@ -1,14 +1,13 @@
 
 import React, { useState } from 'react';
-import { Photo, ExifData, updatePhotoMetadata, deletePhoto } from '@/utils/photoUtils';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import { ChevronRight, ChevronLeft, X, Calendar, Clock, MapPin, Camera, Pencil, Save, Trash2, Download, Award } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
-import PhotoRating from './PhotoRating';
+import { Photo, ExifData, updatePhotoMetadata, deletePhoto } from '@/utils/photoUtils';
 
 interface PhotoModalProps {
   photo: Photo | null;
@@ -255,9 +254,8 @@ const PhotoModal: React.FC<PhotoModalProps> = ({
                       <p className="text-gray-300">{photo.description}</p>
                     </div>
                     
-                    {/* Add photo rating component here */}
-                    {photo.id && <PhotoRating photoId={photo.id} />}
-
+                    {/* Remove PhotoRating component reference */}
+                    
                     {/* Award badge if present */}
                     {photo.award && <div className="flex items-center p-3 glass-morphism rounded-lg bg-blue-900/30 mb-6">
                         <Award size={18} className="text-blue-400 mr-2 flex-shrink-0" />
