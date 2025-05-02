@@ -52,9 +52,9 @@ export const migratePhotosToCloudinary = async () => {
           throw new Error(`Failed to upload to Cloudinary: ${response.statusText}`);
         }
 
-        const result = await response.json();
+        const { cloudinaryUrl, cloudinaryId } = await response.json();
         
-        if (!result.secure_url || !result.public_id) {
+        if (!cloudinaryUrl || !cloudinaryId) {
           throw new Error('Invalid response from Cloudinary');
         }
 
@@ -62,8 +62,8 @@ export const migratePhotosToCloudinary = async () => {
         await supabase
           .from('photo_metadata')
           .update({
-            cloudinary_id: result.public_id,
-            cloudinary_url: result.secure_url
+            cloudinary_id: cloudinaryId,
+            cloudinary_url: cloudinaryUrl
           })
           .eq('id', photo.id);
 

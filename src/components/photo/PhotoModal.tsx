@@ -1,15 +1,17 @@
+
 import React, { useState } from 'react';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Photo, ExifData, updatePhotoMetadata, deletePhoto } from '@/utils/photoUtils';
+import { ChevronRight, ChevronLeft, X, Calendar, Clock, MapPin, Camera, Pencil, Save, Trash2, Download, Award } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight, X, Download, Edit, Trash2, Award } from 'lucide-react';
-import { Photo } from '@/utils/photoTypes';
-import { deletePhoto } from '@/utils/photoDeleteService';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
-import PhotoEditForm from './PhotoEditForm';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import PhotoRating from './PhotoRating';
 
 interface PhotoModalProps {
-  photo: Photo;
+  photo: Photo | null;
   photos: Photo[];
   onClose: () => void;
   onNavigate: (direction: 'next' | 'prev') => void;
@@ -17,170 +19,294 @@ interface PhotoModalProps {
   showDetails?: boolean;
   hideDownload?: boolean;
 }
-
 const PhotoModal: React.FC<PhotoModalProps> = ({
   photo,
   photos,
   onClose,
   onNavigate,
   onPhotoUpdated,
-  showDetails = false,
-  hideDownload = false,
+  showDetails = true,
+  hideDownload = false
 }) => {
+  const [beforeAfterSlider, setBeforeAfterSlider] = useState(50);
   const [isEditing, setIsEditing] = useState(false);
+  const [editedPhoto, setEditedPhoto] = useState<Partial<Photo>>({});
+  const [editedExif, setEditedExif] = useState<ExifData>({});
   const [isDeleting, setIsDeleting] = useState(false);
-
-  const handleDownload = () => {
-    const link = document.createElement('a');
-    link.href = photo.src;
-    link.download = photo.fileName || 'photo.jpg';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  const handleDelete = async () => {
-    if (isDeleting) return;
-    
-    if (!window.confirm('Are you sure you want to delete this photo? This action cannot be undone.')) {
-      return;
+  if (!photo) return null;
+  const handleEditToggle = () => {
+    if (isEditing) {
+      // Exiting edit mode - reset form
+      setIsEditing(false);
+      setEditedPhoto({});
+      setEditedExif({});
+    } else {
+      // Entering edit mode - populate form with current values
+      setIsEditing(true);
+      setEditedPhoto({
+        title: photo.title,
+        description: photo.description,
+        award: photo.award
+      });
+      setEditedExif(photo.exif || {});
     }
-    
-    setIsDeleting(true);
-    
+  };
+  const handleSaveChanges = async () => {
     try {
-      const success = await deletePhoto(photo.id, photo.cloudinaryId, photo.storageId);
+      if (!photo) return;
+      const updates = {
+        ...editedPhoto,
+        exif: editedExif
+      };
+      const success = await updatePhotoMetadata(photo.id, updates);
+      if (success) {
+        toast.success('Photo updated successfully');
+        setIsEditing(false);
+        onPhotoUpdated();
+      }
+    } catch (error) {
+      console.error('Error saving changes:', error);
+      toast.error('Failed to update photo');
+    }
+  };
+  const handleDeleteConfirm = async () => {
+    try {
+      if (!photo || !photo.storageId) return;
+      const success = await deletePhoto(photo.id, photo.storageId);
       if (success) {
         toast.success('Photo deleted successfully');
         onClose();
         onPhotoUpdated();
       }
+    } catch (error) {
+      console.error('Error deleting photo:', error);
+      toast.error('Failed to delete photo');
     } finally {
       setIsDeleting(false);
     }
   };
+  const handleDownload = () => {
+    const a = document.createElement('a');
+    a.href = photo.src;
+    a.download = photo.fileName || `${photo.title}.jpg`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    toast.success('Photo download started');
+  };
+  return <div className="fixed inset-0 z-50 animate-fade-in overflow-auto">
+      {/* Fixed background with blur effect */}
+      <div className="fixed inset-0 bg-black/80 backdrop-blur-md"></div>
 
-  return (
-    <Dialog open={true} onOpenChange={() => onClose()}>
-      <DialogContent className="max-w-7xl w-full p-0 bg-black/90 border-gray-800">
-        <div className="relative flex flex-col md:flex-row h-[90vh]">
-          {/* Close button */}
-          <button 
-            onClick={onClose}
-            className="absolute top-2 right-2 z-50 p-1 rounded-full bg-black/50 hover:bg-black/80 text-white"
-          >
-            <X size={24} />
-          </button>
-          
-          {/* Navigation buttons */}
-          <button 
-            onClick={() => onNavigate('prev')}
-            className="absolute left-2 top-1/2 -translate-y-1/2 z-50 p-2 rounded-full bg-black/50 hover:bg-black/80 text-white"
-          >
-            <ChevronLeft size={24} />
-          </button>
-          <button 
-            onClick={() => onNavigate('next')}
-            className="absolute right-2 top-1/2 -translate-y-1/2 z-50 p-2 rounded-full bg-black/50 hover:bg-black/80 text-white"
-          >
-            <ChevronRight size={24} />
-          </button>
-          
-          {/* Photo */}
-          <div className="flex-1 flex items-center justify-center p-4 md:p-8 overflow-hidden">
-            <img 
-              src={photo.src} 
-              alt={photo.title || 'Photo'} 
-              className="max-h-full max-w-full object-contain"
-            />
+      {/* Close button */}
+      <div className="absolute top-4 right-4 z-10">
+        <button onClick={onClose} className="h-10 w-10 rounded-full glass-morphism flex items-center justify-center text-white hover:bg-white/10 transition-colors" aria-label="Close">
+          <X size={20} />
+        </button>
+      </div>
+      
+      {/* Main content area with improved vertical alignment and mobile scroll */}
+      <div className="relative min-h-screen flex flex-col md:flex-row items-start md:items-center justify-center p-4 pb-24 bg-black overflow-y-auto">
+        <div className="w-full max-w-[2000px] mx-auto flex flex-col md:flex-row gap-4 md:gap-8 items-start md:items-center">
+          {/* Left side - Image with proper centering and mobile scroll */}
+          <div className="flex-1 relative flex items-start md:items-center justify-center w-full">
+            {photo.beforeAfter ? <div className="relative w-full h-full">
+                {/* Before/After slider implementation */}
+                <div className="absolute inset-0 overflow-hidden">
+                  <img src={photo.beforeAfter.before} alt="Before" className="w-full h-full object-contain" />
+                </div>
+                <div className="absolute inset-0 overflow-hidden" style={{
+              clipPath: `inset(0 0 0 ${beforeAfterSlider}%)`
+            }}>
+                  <img src={photo.beforeAfter.after} alt="After" className="w-full h-full object-contain" />
+                </div>
+                <div className="absolute inset-0 flex items-center">
+                  <div className="relative w-full" style={{
+                touchAction: 'none'
+              }}>
+                    <input type="range" min="0" max="100" value={beforeAfterSlider} onChange={e => setBeforeAfterSlider(parseInt(e.target.value))} className="w-full cursor-pointer appearance-none bg-transparent [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-12 [&::-webkit-slider-thumb]:w-2 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-blue-500" />
+                    <div className="absolute top-1/2 w-0.5 h-full bg-white pointer-events-none transform -translate-y-1/2" style={{
+                  left: `${beforeAfterSlider}%`
+                }} />
+                  </div>
+                </div>
+                <div className="absolute top-4 left-4 bg-black/50 p-2 px-3 rounded-full text-xs font-medium">
+                  Before / After
+                </div>
+              </div> : <div className="w-full relative">
+                <img 
+                  src={photo.src} 
+                  alt={photo.title} 
+                  className="w-full max-w-full object-contain select-none" 
+                  style={{
+                    maxHeight: 'calc(100vh - 8rem)',
+                    touchAction: 'none',
+                    WebkitTouchCallout: 'none',
+                    pointerEvents: 'none'
+                  }}
+                  onContextMenu={(e) => e.preventDefault()}
+                />
+              </div>}
+            
+            {/* Navigation arrows */}
+            <button onClick={() => onNavigate('prev')} className="absolute left-4 top-1/2 transform -translate-y-1/2 h-12 w-12 rounded-full glass-morphism flex items-center justify-center hover:bg-white/10 transition-colors" aria-label="Previous photo">
+              <ChevronLeft size={28} />
+            </button>
+            <button onClick={() => onNavigate('next')} className="absolute right-4 top-1/2 transform -translate-y-1/2 h-12 w-12 rounded-full glass-morphism flex items-center justify-center hover:bg-white/10 transition-colors" aria-label="Next photo">
+              <ChevronRight size={28} />
+            </button>
           </div>
           
-          {/* Details panel */}
-          {showDetails && (
-            <div className="w-full md:w-80 bg-gray-900 p-6 overflow-y-auto">
-              {isEditing ? (
-                <PhotoEditForm 
-                  photo={photo} 
-                  onCancel={() => setIsEditing(false)} 
-                  onSave={() => {
-                    setIsEditing(false);
-                    onPhotoUpdated();
-                  }} 
-                />
-              ) : (
-                <>
-                  <div className="flex justify-between items-start mb-4">
-                    <h2 className="text-xl font-bold">{photo.title || 'Untitled'}</h2>
-                    <div className="flex space-x-2">
-                      <Button 
-                        variant="ghost" 
-                        size="icon" 
-                        onClick={() => setIsEditing(true)}
-                        title="Edit photo"
-                      >
-                        <Edit size={18} />
-                      </Button>
-                      <Button 
-                        variant="ghost" 
-                        size="icon" 
-                        onClick={handleDelete}
-                        disabled={isDeleting}
-                        className="text-red-500 hover:text-red-400"
-                        title="Delete photo"
-                      >
-                        <Trash2 size={18} />
-                      </Button>
+          {/* Right side - Details panel */}
+          {showDetails && <div className="md:w-80 lg:w-96 glass-morphism rounded-xl flex flex-col max-h-[70vh] self-center">
+              <div className="flex justify-between items-start p-6 pb-4">
+                <h2 className="text-2xl font-bold">{photo.title}</h2>
+                <div className="flex gap-2">
+                  {!isEditing && <>
+                      <button onClick={handleEditToggle} className="h-8 w-8 rounded-full glass-morphism flex items-center justify-center text-white hover:bg-white/20 transition-colors" title="Edit">
+                        <Pencil size={16} />
+                      </button>
+                      
+                      {!hideDownload && <button onClick={handleDownload} className="h-8 w-8 rounded-full glass-morphism flex items-center justify-center text-white hover:bg-white/20 transition-colors" title="Download">
+                          <Download size={16} />
+                        </button>}
+                      
+                      <button onClick={() => setIsDeleting(true)} className="h-8 w-8 rounded-full glass-morphism flex items-center justify-center text-white hover:bg-red-500/30 transition-colors" title="Delete">
+                        <Trash2 size={16} />
+                      </button>
+                    </>}
+                </div>
+              </div>
+              
+              <div className="flex-1 overflow-y-auto p-6 pt-2">
+                {isEditing ? <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Title</label>
+                      <Input value={editedPhoto.title || ''} onChange={e => setEditedPhoto({
+                  ...editedPhoto,
+                  title: e.target.value
+                })} className="bg-black/30 border-white/20" />
                     </div>
-                  </div>
-                  
-                  {photo.award && (
-                    <div className="mb-4 flex items-center text-yellow-500">
-                      <Award size={18} className="mr-2" />
-                      <span>{photo.award}</span>
+                    
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Description</label>
+                      <Textarea value={editedPhoto.description || ''} onChange={e => setEditedPhoto({
+                  ...editedPhoto,
+                  description: e.target.value
+                })} className="bg-black/30 border-white/20" rows={3} />
                     </div>
-                  )}
-                  
-                  {photo.description && (
-                    <p className="text-gray-300 mb-6">{photo.description}</p>
-                  )}
-                  
-                  {/* Photo rating component */}
-                  <PhotoRating photoId={photo.id} />
-                  
-                  {/* EXIF data */}
-                  {photo.exif && Object.keys(photo.exif).length > 0 && (
-                    <div className="mb-6">
-                      <h3 className="text-sm font-medium text-gray-400 mb-2">Photo Details</h3>
-                      <div className="space-y-1 text-sm">
-                        {Object.entries(photo.exif).map(([key, value]) => (
-                          <div key={key} className="flex justify-between">
-                            <span className="text-gray-400 capitalize">{key}</span>
-                            <span className="text-gray-300">{value}</span>
-                          </div>
-                        ))}
+                    
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Award (optional)</label>
+                      <Input value={editedPhoto.award || ''} onChange={e => setEditedPhoto({
+                  ...editedPhoto,
+                  award: e.target.value
+                })} className="bg-black/30 border-white/20" placeholder="e.g. Nature Photography Award 2023" />
+                    </div>
+                    
+                    <div className="space-y-4 pt-4 border-t border-white/10">
+                      <h3 className="text-lg font-medium">Photo Details</h3>
+                      
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Camera</label>
+                        <Input value={editedExif.camera || ''} onChange={e => setEditedExif({
+                    ...editedExif,
+                    camera: e.target.value
+                  })} className="bg-black/30 border-white/20" placeholder="e.g. Canon EOS 5D Mark IV" />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Date</label>
+                        <Input value={editedExif.date || ''} onChange={e => setEditedExif({
+                    ...editedExif,
+                    date: e.target.value
+                  })} className="bg-black/30 border-white/20" placeholder="e.g. January 15, 2023" />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Location</label>
+                        <Input value={editedExif.location || ''} onChange={e => setEditedExif({
+                    ...editedExif,
+                    location: e.target.value
+                  })} className="bg-black/30 border-white/20" placeholder="e.g. Tromsø, Norway" />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Exposure</label>
+                        <Input value={editedExif.exposure || ''} onChange={e => setEditedExif({
+                    ...editedExif,
+                    exposure: e.target.value
+                  })} className="bg-black/30 border-white/20" placeholder="e.g. 30s, f/2.8, ISO 1600" />
                       </div>
                     </div>
-                  )}
-                  
-                  {/* Download button */}
-                  {!hideDownload && (
-                    <Button 
-                      onClick={handleDownload} 
-                      className="w-full mt-4"
-                      variant="outline"
-                    >
-                      <Download size={16} className="mr-2" />
-                      Download
-                    </Button>
-                  )}
-                </>
-              )}
-            </div>
-          )}
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
-};
+                    
+                    <div className="flex justify-end space-x-2 pt-4">
+                      <Button variant="outline" onClick={handleEditToggle} className="border-white/20">
+                        Cancel
+                      </Button>
+                      <Button onClick={handleSaveChanges} className="bg-blue-600 hover:bg-blue-700">
+                        <Save size={16} className="mr-2" />
+                        Save Changes
+                      </Button>
+                    </div>
+                  </div> : <>
+                    {/* Description */}
+                    <div className="mb-6">
+                      <p className="text-gray-300">{photo.description}</p>
+                    </div>
+                    
+                    {/* Add photo rating component here */}
+                    {photo.id && <PhotoRating photoId={photo.id} />}
 
+                    {/* Award badge if present */}
+                    {photo.award && <div className="flex items-center p-3 glass-morphism rounded-lg bg-blue-900/30 mb-6">
+                        <Award size={18} className="text-blue-400 mr-2 flex-shrink-0" />
+                        <span>{photo.award}</span>
+                      </div>}
+                    
+                    {/* EXIF data with improved styling */}
+                    {photo.exif && Object.values(photo.exif).some(val => val) && <div className="space-y-4">
+                        <h3 className="text-lg font-medium">Photo Details</h3>
+                        
+                        <div className="space-y-3">
+                          {photo.exif.camera && <div className="flex items-center glass-morphism p-2 px-4 rounded-lg">
+                              <Camera size={16} className="text-blue-400 mr-3 flex-shrink-0" />
+                              <span>{photo.exif.camera}</span>
+                            </div>}
+                          
+                          {photo.exif.date && <div className="flex items-center glass-morphism p-2 px-4 rounded-lg">
+                              <Calendar size={16} className="text-blue-400 mr-3 flex-shrink-0" />
+                              <span>{photo.exif.date}</span>
+                            </div>}
+                          
+                          {photo.exif.location && <div className="flex items-center glass-morphism p-2 px-4 rounded-lg">
+                              <MapPin size={16} className="text-blue-400 mr-3 flex-shrink-0" />
+                              <span>{photo.exif.location}</span>
+                            </div>}
+                          
+                          {photo.exif.exposure && <div className="flex items-center glass-morphism p-2 px-4 rounded-lg">
+                              <Clock size={16} className="text-blue-400 mr-3 flex-shrink-0" />
+                              <span>{photo.exif.exposure}</span>
+                            </div>}
+                        </div>
+                      </div>}
+                  </>}
+              </div>
+            </div>}
+        </div>
+      </div>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={isDeleting} onOpenChange={setIsDeleting}>
+        <DialogContent>
+          <DialogTitle>Delete Photo</DialogTitle>
+          <p className="py-4">Are you sure you want to delete this photo? This action cannot be undone.</p>
+          <div className="flex justify-end gap-3">
+            <Button variant="outline" onClick={() => setIsDeleting(false)}>Cancel</Button>
+            <Button variant="destructive" onClick={handleDeleteConfirm}>Delete</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>;
+};
 export default PhotoModal;
