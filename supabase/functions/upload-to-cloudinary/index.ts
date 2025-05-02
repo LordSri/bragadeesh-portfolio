@@ -1,12 +1,20 @@
 
-// Follow this set up guide to use the Cloudinary SDK: 
-// https://github.com/supabase/supabase/tree/master/examples/edge-functions/supabase/functions/cloudinary-image-upload
-
 import { serve } from "https://deno.land/std@0.170.0/http/server.ts";
 import { v2 as cloudinary } from "https://esm.sh/cloudinary@1.33.0";
 
 // This function handles image uploads to Cloudinary
 serve(async (req: Request) => {
+  // CORS headers to allow requests from any origin
+  const corsHeaders = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  };
+
+  // Handle CORS preflight requests
+  if (req.method === "OPTIONS") {
+    return new Response(null, { headers: corsHeaders });
+  }
+
   try {
     // Get the request data
     const formData = await req.formData();
@@ -15,7 +23,7 @@ serve(async (req: Request) => {
     if (!file) {
       return new Response(
         JSON.stringify({ error: "No file provided" }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
@@ -60,13 +68,13 @@ serve(async (req: Request) => {
 
     return new Response(
       JSON.stringify(uploadResult),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {
     console.error("Upload error:", error);
     return new Response(
       JSON.stringify({ error: error.message }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
 });

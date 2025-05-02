@@ -123,8 +123,8 @@ export const fetchPhotoMetadata = async (): Promise<Photo[]> => {
       beforeAfter: item.before_after as unknown as BeforeAfterData,
       storageId: item.storage_id,
       fileName: item.file_name,
-      cloudinaryId: item.cloudinary_id,
-      cloudinaryUrl: item.cloudinary_url
+      cloudinaryId: item.cloudinary_id || undefined,
+      cloudinaryUrl: item.cloudinary_url || undefined
     }));
   } catch (error) {
     console.error('Error fetching photo metadata:', error);

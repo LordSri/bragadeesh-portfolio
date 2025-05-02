@@ -10,7 +10,7 @@ interface PhotoRatingProps {
   photoId: string;
 }
 
-// Define types for our RPC responses
+// Define proper response types for RPC functions
 interface UserRatingResponse {
   rating: number;
 }
@@ -51,7 +51,7 @@ export const PhotoRating: React.FC<PhotoRatingProps> = ({ photoId }) => {
   const checkUserRating = async (uid: string) => {
     try {
       const { data, error } = await supabase
-        .rpc<UserRatingResponse>('get_user_photo_rating', { 
+        .rpc('get_user_photo_rating', { 
           photo_id_param: photoId,
           user_id_param: uid
         });
@@ -73,7 +73,7 @@ export const PhotoRating: React.FC<PhotoRatingProps> = ({ photoId }) => {
   const fetchAverageRating = async () => {
     try {
       const { data, error } = await supabase
-        .rpc<PhotoRatingsResponse>('get_photo_ratings', { 
+        .rpc('get_photo_ratings', { 
           photo_id_param: photoId 
         });
       
