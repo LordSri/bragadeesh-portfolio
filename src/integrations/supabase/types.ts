@@ -14,6 +14,8 @@ export type Database = {
           aspect_ratio: string | null
           award: string | null
           before_after: Json | null
+          cloudinary_id: string | null
+          cloudinary_url: string | null
           created_at: string
           description: string | null
           exif: Json | null
@@ -27,6 +29,8 @@ export type Database = {
           aspect_ratio?: string | null
           award?: string | null
           before_after?: Json | null
+          cloudinary_id?: string | null
+          cloudinary_url?: string | null
           created_at?: string
           description?: string | null
           exif?: Json | null
@@ -40,6 +44,8 @@ export type Database = {
           aspect_ratio?: string | null
           award?: string | null
           before_after?: Json | null
+          cloudinary_id?: string | null
+          cloudinary_url?: string | null
           created_at?: string
           description?: string | null
           exif?: Json | null

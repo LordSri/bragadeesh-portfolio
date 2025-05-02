@@ -29,3 +29,20 @@ export interface Photo {
   cloudinaryId?: string;
   cloudinaryUrl?: string;
 }
+
+// Database types that match Supabase table structure
+export interface PhotoDbRecord {
+  id: string;
+  title: string;
+  description: string;
+  aspect_ratio: string;
+  award?: string;
+  exif?: Json;
+  before_after?: Json;
+  storage_id: string;
+  file_name: string;
+  created_at: string;
+  updated_at: string;
+  cloudinary_id?: string;
+  cloudinary_url?: string;
+}

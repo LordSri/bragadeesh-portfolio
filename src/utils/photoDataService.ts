@@ -1,98 +1,100 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
-import { Photo } from "./photoTypes";
-import { Json } from "@/integrations/supabase/types";
+import { Photo, PhotoDbRecord } from "./photoTypes";
 import { getPublicUrl } from "./photoStorageService";
 
-// Save photo metadata to database
-export const savePhotoMetadata = async (photo: Omit<Photo, 'id'>): Promise<string | null> => {
+// Convert database photo record to frontend Photo object
+export const mapDbRecordToPhoto = (record: PhotoDbRecord): Photo => {
+  return {
+    id: record.id,
+    src: record.cloudinary_url || getPublicUrl(record.storage_id),
+    title: record.title || '',
+    description: record.description || '',
+    award: record.award,
+    aspectRatio: record.aspect_ratio,
+    exif: record.exif as any,
+    beforeAfter: record.before_after as any,
+    storageId: record.storage_id,
+    fileName: record.file_name,
+    cloudinaryId: record.cloudinary_id,
+    cloudinaryUrl: record.cloudinary_url
+  };
+};
+
+// Save photo metadata to Supabase
+export const savePhotoMetadata = async (photo: Partial<Photo>) => {
   try {
+    const { aspectRatio, fileName, ...rest } = photo;
+    
     const { data, error } = await supabase
       .from('photo_metadata')
       .insert({
-        storage_id: photo.storageId || null,
-        file_name: photo.fileName,
-        title: photo.title,
-        description: photo.description,
-        award: photo.award,
-        aspect_ratio: photo.aspectRatio,
-        exif: photo.exif as unknown as Json,
-        before_after: photo.beforeAfter as unknown as Json,
-        cloudinary_id: photo.cloudinaryId,
-        cloudinary_url: photo.cloudinaryUrl
+        title: rest.title || '',
+        description: rest.description || '',
+        aspect_ratio: aspectRatio || '1/1',
+        award: rest.award,
+        exif: rest.exif,
+        before_after: rest.beforeAfter,
+        storage_id: rest.storageId || '',
+        file_name: fileName || '',
+        cloudinary_id: rest.cloudinaryId,
+        cloudinary_url: rest.cloudinaryUrl
       })
-      .select('id')
+      .select()
       .single();
-
-    if (error) {
-      throw new Error(error.message);
-    }
-
-    return data.id;
+    
+    if (error) throw error;
+    
+    return mapDbRecordToPhoto(data as PhotoDbRecord);
   } catch (error) {
     console.error('Error saving photo metadata:', error);
-    toast.error('Failed to save photo information');
-    return null;
+    throw error;
   }
 };
 
-// Fetch photo metadata from database
+// Fetch photo metadata from Supabase
 export const fetchPhotoMetadata = async (): Promise<Photo[]> => {
   try {
     const { data, error } = await supabase
       .from('photo_metadata')
       .select('*')
       .order('created_at', { ascending: false });
-
-    if (error) {
-      throw new Error(error.message);
-    }
-
-    return data.map(item => ({
-      id: item.id,
-      src: item.cloudinary_url || getPublicUrl(item.storage_id), // Prefer Cloudinary URL if available
-      title: item.title || 'Untitled',
-      description: item.description || '',
-      award: item.award || undefined,
-      aspectRatio: item.aspect_ratio || 'auto',
-      exif: item.exif as unknown as Photo['exif'],
-      beforeAfter: item.before_after as unknown as Photo['beforeAfter'],
-      storageId: item.storage_id,
-      fileName: item.file_name,
-      cloudinaryId: item.cloudinary_id || undefined,
-      cloudinaryUrl: item.cloudinary_url || undefined
-    }));
+    
+    if (error) throw error;
+    
+    return (data as PhotoDbRecord[]).map(mapDbRecordToPhoto);
   } catch (error) {
     console.error('Error fetching photo metadata:', error);
-    toast.error('Failed to load photos');
     return [];
   }
 };
 
 // Update photo metadata
-export const updatePhotoMetadata = async (id: string, updates: Partial<Photo>): Promise<boolean> => {
+export const updatePhotoMetadata = async (photo: Partial<Photo> & { id: string }) => {
   try {
-    const { error } = await supabase
+    const { id, aspectRatio, cloudinaryId, cloudinaryUrl, ...rest } = photo;
+    
+    const { data, error } = await supabase
       .from('photo_metadata')
       .update({
-        title: updates.title,
-        description: updates.description,
-        award: updates.award,
-        aspect_ratio: updates.aspectRatio,
-        exif: updates.exif as unknown as Json,
-        before_after: updates.beforeAfter as unknown as Json
+        title: rest.title,
+        description: rest.description,
+        aspect_ratio: aspectRatio,
+        award: rest.award,
+        exif: rest.exif,
+        before_after: rest.beforeAfter,
+        cloudinary_id: cloudinaryId,
+        cloudinary_url: cloudinaryUrl
       })
-      .eq('id', id);
-
-    if (error) {
-      throw new Error(error.message);
-    }
-
-    return true;
+      .eq('id', id)
+      .select()
+      .single();
+    
+    if (error) throw error;
+    
+    return mapDbRecordToPhoto(data as PhotoDbRecord);
   } catch (error) {
     console.error('Error updating photo metadata:', error);
-    toast.error('Failed to update photo');
-    return false;
+    throw error;
   }
 };
