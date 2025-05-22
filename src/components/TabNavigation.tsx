@@ -31,7 +31,7 @@ const TabNavigation: React.FC<TabProps> = ({
     id: 'graphic-design',
     label: 'Graphic Design',
     icon: <Palette size={18} />,
-    locked: true
+    locked: false // Changed from true to false to unlock
   }];
 
   const handleTabClick = (tabId: string, locked: boolean) => {

@@ -1,71 +1,113 @@
 
-import React from 'react';
-import { Palette, Layers, Figma, PenTool } from 'lucide-react';
-
-const designProjects = [
-  {
-    id: 1,
-    title: "Cosmic Brand Identity",
-    category: "Branding",
-    description: "Complete brand identity for a space-themed tech company.",
-    thumbnail: "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7",
-    icon: <Palette size={18} />
-  },
-  {
-    id: 2,
-    title: "Aurora UI Kit",
-    category: "UI/UX Design",
-    description: "A glassmorphic UI kit with cosmic-inspired elements.",
-    thumbnail: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81",
-    icon: <Figma size={18} />
-  },
-  {
-    id: 3,
-    title: "Nebula Illustrations",
-    category: "Digital Art",
-    description: "A series of nebula-inspired digital illustrations.",
-    thumbnail: "https://images.unsplash.com/photo-1470813740244-df37b8c1edcb",
-    icon: <PenTool size={18} />
-  },
-  {
-    id: 4,
-    title: "Galactic Magazine Layout",
-    category: "Print Design",
-    description: "Editorial design for a space science magazine.",
-    thumbnail: "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
-    icon: <Layers size={18} />
-  }
-];
+import React, { useState, useEffect } from 'react';
+import { fetchPhotoMetadata, Photo } from '@/utils/photoUtils';
+import GraphicDesignUploader from '@/components/graphic-design/GraphicDesignUploader';
+import GraphicDesignGrid from '@/components/graphic-design/GraphicDesignGrid';
+import GraphicDesignModal from '@/components/graphic-design/GraphicDesignModal';
 
 const GraphicDesignTab: React.FC = () => {
+  const [designs, setDesigns] = useState<Photo[]>([]);
+  const [selectedDesign, setSelectedDesign] = useState<Photo | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch designs from Supabase
+  const loadDesigns = async () => {
+    setLoading(true);
+    const fetchedPhotos = await fetchPhotoMetadata('design');
+    setDesigns(fetchedPhotos);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    loadDesigns();
+  }, []);
+
+  // Handle design selection for modal view
+  const handleDesignClick = (design: Photo) => {
+    setSelectedDesign(design);
+    
+    // Prevent scrolling when modal is open
+    document.body.style.overflow = 'hidden';
+  };
+  
+  const closeModal = () => {
+    setSelectedDesign(null);
+    document.body.style.overflow = '';
+  };
+  
+  const navigateGallery = (direction: 'next' | 'prev') => {
+    if (!selectedDesign || designs.length === 0) return;
+    
+    const currentIndex = designs.findIndex(p => p.id === selectedDesign.id);
+    if (currentIndex === -1) return;
+    
+    let newIndex;
+    
+    if (direction === 'next') {
+      newIndex = currentIndex === designs.length - 1 ? 0 : currentIndex + 1;
+    } else {
+      newIndex = currentIndex === 0 ? designs.length - 1 : currentIndex - 1;
+    }
+    
+    setSelectedDesign(designs[newIndex]);
+  };
+  
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (selectedDesign) {
+        if (event.key === 'ArrowRight') {
+          navigateGallery('next');
+        } else if (event.key === 'ArrowLeft') {
+          navigateGallery('prev');
+        } else if (event.key === 'Escape') {
+          closeModal();
+        }
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [selectedDesign, designs]);
+  
   return (
     <div className="w-full">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {designProjects.map((project, index) => (
-          <div 
-            key={project.id} 
-            className="glass-panel rounded-xl overflow-hidden group hover:ring-1 hover:ring-aurora-red/30 transition-all animate-fade-in"
-            style={{ animationDelay: `${index * 100}ms` }}
-          >
-            <div className="relative h-48 overflow-hidden">
-              <img 
-                src={project.thumbnail} 
-                alt={project.title} 
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-              <div className="absolute top-3 left-3 glass-panel p-2 rounded-md flex items-center gap-1">
-                {project.icon}
-                <span className="text-xs font-medium">{project.category}</span>
-              </div>
-            </div>
-            
-            <div className="p-4">
-              <h3 className="text-lg font-bold mb-1">{project.title}</h3>
-              <p className="text-gray-400 text-sm">{project.description}</p>
-            </div>
-          </div>
-        ))}
-      </div>
+      {/* Design Uploader */}
+      <GraphicDesignUploader onDesignUploaded={loadDesigns} />
+      
+      {/* Loading State */}
+      {loading && (
+        <div className="flex justify-center items-center py-20">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+        </div>
+      )}
+      
+      {/* Design Grid */}
+      {!loading && designs.length > 0 && (
+        <GraphicDesignGrid designs={designs} onDesignClick={handleDesignClick} />
+      )}
+      
+      {/* Empty State */}
+      {!loading && designs.length === 0 && (
+        <div className="text-center py-20">
+          <h3 className="text-xl font-medium mb-2">No designs yet</h3>
+          <p className="text-gray-400">Upload designs to get started</p>
+        </div>
+      )}
+      
+      {/* Modal with selected design */}
+      {selectedDesign && (
+        <GraphicDesignModal 
+          design={selectedDesign} 
+          designs={designs}
+          onClose={closeModal} 
+          onNavigate={navigateGallery}
+          onDesignUpdated={loadDesigns}
+        />
+      )}
     </div>
   );
 };

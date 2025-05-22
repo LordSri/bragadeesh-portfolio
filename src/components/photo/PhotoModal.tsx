@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -32,7 +31,9 @@ const PhotoModal: React.FC<PhotoModalProps> = ({
   const [editedPhoto, setEditedPhoto] = useState<Partial<Photo>>({});
   const [editedExif, setEditedExif] = useState<ExifData>({});
   const [isDeleting, setIsDeleting] = useState(false);
+  
   if (!photo) return null;
+  
   const handleEditToggle = () => {
     if (isEditing) {
       // Exiting edit mode - reset form
@@ -50,6 +51,7 @@ const PhotoModal: React.FC<PhotoModalProps> = ({
       setEditedExif(photo.exif || {});
     }
   };
+  
   const handleSaveChanges = async () => {
     try {
       if (!photo) return;
@@ -68,10 +70,12 @@ const PhotoModal: React.FC<PhotoModalProps> = ({
       toast.error('Failed to update photo');
     }
   };
+  
   const handleDeleteConfirm = async () => {
     try {
-      if (!photo || !photo.storageId) return;
-      const success = await deletePhoto(photo.id, photo.storageId);
+      if (!photo || !photo.id) return;
+      // Fix: Use only photo.id as argument
+      const success = await deletePhoto(photo.id);
       if (success) {
         toast.success('Photo deleted successfully');
         onClose();
@@ -84,6 +88,7 @@ const PhotoModal: React.FC<PhotoModalProps> = ({
       setIsDeleting(false);
     }
   };
+  
   const handleDownload = () => {
     const a = document.createElement('a');
     a.href = photo.src;
@@ -93,6 +98,7 @@ const PhotoModal: React.FC<PhotoModalProps> = ({
     document.body.removeChild(a);
     toast.success('Photo download started');
   };
+  
   return <div className="fixed inset-0 z-50 animate-fade-in overflow-auto">
       {/* Fixed background with blur effect */}
       <div className="fixed inset-0 bg-black/80 backdrop-blur-md"></div>
